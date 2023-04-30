@@ -19,7 +19,7 @@ export class ProductService {
 
     return this.http.get<PageableProducts>(`${this.productUrl}/find/all`)
       .pipe(
-        tap(test => {
+        tap(_ => {
           console.log(`fetched products`)
         }),
         catchError(this.handleError<PageableProducts>('getProducts', { products:[], number_of_pages:0}))
@@ -30,7 +30,7 @@ export class ProductService {
 
     return this.http.get<Product>(`${this.productUrl}/find/${id}`)
       .pipe(
-        tap(test => {
+        tap(_ => {
           console.log(`fetched products`)
         }),
         catchError(this.handleError<Product>('getProductById', {} as Product))
@@ -41,7 +41,7 @@ export class ProductService {
 
     return this.http.get<PageableProducts>(`${this.productUrl}/find/category/${category}`)
       .pipe(
-        tap(test => {
+        tap(_ => {
           console.log(`fetched products`)
         }),
         catchError(this.handleError<PageableProducts>('getProductsByCategory',
@@ -53,7 +53,7 @@ export class ProductService {
 
     return this.http.get<PageableProducts>(`${this.productUrl}/find/brand/${brand}`)
       .pipe(
-        tap(test => {
+        tap(_ => {
           console.log(`fetched products`)
         }),
         catchError(this.handleError<PageableProducts>('getProductsByBrand',
@@ -64,7 +64,7 @@ export class ProductService {
   addProduct(product: Product): Observable<Product> {
 
     return this.http.post<Product>(`${this.productUrl}/add`, product, this.httpOptions).pipe(
-      tap((newStudent: Product) => console.log(`added product w/ id=${product.id}`)),
+      tap((newProduct: Product) => console.log(`added product w/ id=${newProduct.id}`)),
       catchError(this.handleError<Product>('addProduct'))
     )
 
@@ -97,19 +97,19 @@ export class ProductService {
     }
     if(searchQuery.category !== '')
     {
-      queryParams.append("category",searchQuery.brand);
+      queryParams.append("category",searchQuery.category);
     }
 
-    if(searchQuery.brand !== '')
+    if(searchQuery.brands.length > 0 )
     {
-      queryParams.append("brand",searchQuery.brand);
+      queryParams.append("brands",searchQuery.brands.toString());
     }
 
     queryParams.append("size",searchQuery.size);
     queryParams.append("page",searchQuery.page);
 
     return this.http.get<PageableProducts>(`${this.productUrl}/search`,{params:queryParams}).pipe(
-        tap(test => {
+        tap(_ => {
           console.log(`fetched products`)
         }),
         catchError(this.handleError<PageableProducts>('getStudents', { products:[], number_of_pages:0}))

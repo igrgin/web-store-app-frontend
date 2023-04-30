@@ -8,7 +8,11 @@ import {Search} from "../interface/search/search";
 })
 export class SearchComponent implements OnInit{
 
-  searchInput:Search = {} as Search;
+  searchEventOutput:Search = {} as Search;
+  allCategories:string[] = [];
+  allBrands:string[]=[];
+  rangeValues: number[] = [20, 80];
+  minMaxRangeValues: number[] = [0, 1000];
   @Output()
   searchEvent: EventEmitter<Search> = new EventEmitter<Search>();
 
@@ -16,11 +20,14 @@ export class SearchComponent implements OnInit{
   }
 
   ngOnInit(): void {
+    this.allCategories.push("test","test1")
+    this.allBrands.push("test2","test3")
+    console.log(this.allBrands)
   }
 
   onSearchEvent()
   {
-    this.searchEvent.emit(this.searchInput);
+    this.searchEvent.emit(this.searchEventOutput);
   }
 
 }

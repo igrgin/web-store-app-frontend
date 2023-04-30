@@ -3,7 +3,7 @@ export interface Search
 {
   name:string,
   category:string,
-  brand:string,
+  brands:string[],
   page:number,
   size:number
 }

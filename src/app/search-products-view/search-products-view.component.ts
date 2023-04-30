@@ -29,7 +29,7 @@ export class SearchProductsViewComponent {
     const newPageQuery: Search={
       name:this.searchParams.name,
       category:this.searchParams.category,
-      brand:this.searchParams.brand,
+      brands:this.searchParams.brands,
       page:$event.first - 1,
       size:$event.rows
     }

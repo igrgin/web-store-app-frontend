@@ -1,6 +1,23 @@
-<div class="p-inputgroup">
-  <input type="text" pInputText placeholder="Search" [(ngModel)]="searchInput.name">
-  <button pButton pRipple class="pi" (click)="onSearchEvent()" ><i class="pi pi-search"></i></button>
+<div class="flex-container">
+  <div class="flex-item">
+    <div class="p-inputgroup">
+      <input type="text" pInputText placeholder="Search" [(ngModel)]="searchEventOutput.name">
+      <button pButton pRipple class="pi" (click)="onSearchEvent()"><i class="pi pi-search"></i></button>
+    </div>
+  </div>
+  <p-divider></p-divider>
+  <div class="card flex">
+    <span>Price Range: {{rangeValues[0]}} - {{rangeValues[1]}}</span><br><br>
+    <p-slider [(ngModel)]="rangeValues" [range]="true" [min]="minMaxRangeValues[0]" [max]="minMaxRangeValues[1]" aria-label="label_number"></p-slider>
+  </div>
+  <p-divider></p-divider>
+  <div class="flex-item">
+    <div>
+      <p-dropdown [options]="allCategories" [(ngModel)]="searchEventOutput.category" placeholder="Choose a Category"></p-dropdown>
+    </div>
+    <div>
+      <p-multiSelect [options]="allBrands" [(ngModel)]="searchEventOutput.brands" placeholder="Choose Brands"></p-multiSelect>
+    </div>
+  </div>
 </div>
-
-
+<p-divider></p-divider>

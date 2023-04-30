@@ -1,6 +1,6 @@
 <app-search (searchEvent)="onSearchEventTriggered($event)"></app-search>
 
-<div class="card">
+<div class="card"  style="margin-top: 20px;">
   <p-dataView [value]="searchResults.products" [rows]="5" [paginator]="true">
     <ng-template *ngFor ="let product of searchResults.products" pTemplate="listItem">
       <div class="col-12">
@@ -30,5 +30,4 @@
     </ng-template>
   </p-dataView>
 </div>
-
 

@@ -22,6 +22,12 @@ import {MenubarModule} from "primeng/menubar";
 import {DataViewModule} from "primeng/dataview";
 import {TagModule} from "primeng/tag";
 import {NgOptimizedImage} from "@angular/common";
+import {SidebarModule} from "primeng/sidebar";
+import {MultiSelectModule} from "primeng/multiselect";
+import {DividerModule} from "primeng/divider";
+import {DropdownModule} from "primeng/dropdown";
+import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {SliderModule} from "primeng/slider";
 
 @NgModule({
   declarations: [
@@ -48,7 +54,14 @@ import {NgOptimizedImage} from "@angular/common";
     MenubarModule,
     DataViewModule,
     TagModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    SidebarModule,
+    MultiSelectModule,
+    DividerModule,
+    DropdownModule,
+    BrowserAnimationsModule,
+    NoopAnimationsModule,
+    SliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]
