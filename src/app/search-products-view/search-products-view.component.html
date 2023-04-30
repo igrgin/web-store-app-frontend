@@ -1,0 +1,14 @@
+<app-search (searchEvent)="onSearchEventTriggered($event)"></app-search>
+<div *ngIf="!searchResults">
+  <span>It's really empty here... try searching!🔎</span>
+</div>
+<div *ngIf="searchResults">
+  <ng-container *ngFor="let product of searchResults?.products">
+    <div>
+      <h1>{{product.name}}</h1>
+    </div>
+  </ng-container>
+  <p-paginator (onPageChange)="onPageChange($event)" [first]="1" [rows]="10" [totalRecords]="searchResults.number_of_pages.valueOf()" [rowsPerPageOptions]="[10, 20, 30]"></p-paginator>
+</div>
+
+
