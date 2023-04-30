@@ -19,6 +19,9 @@ import { MenuViewComponent } from './menu-view/menu-view.component';
 import {TabMenuModule} from "primeng/tabmenu";
 import {MegaMenuModule} from "primeng/megamenu";
 import {MenubarModule} from "primeng/menubar";
+import {DataViewModule} from "primeng/dataview";
+import {TagModule} from "primeng/tag";
+import {NgOptimizedImage} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -42,7 +45,10 @@ import {MenubarModule} from "primeng/menubar";
     PaginatorModule,
     TabMenuModule,
     MegaMenuModule,
-    MenubarModule
+    MenubarModule,
+    DataViewModule,
+    TagModule,
+    NgOptimizedImage
   ],
   providers: [],
   bootstrap: [AppComponent]

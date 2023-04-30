@@ -1,5 +1,4 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {ProductService} from "../service/product/product.service";
 import {Search} from "../interface/search/search";
 
 @Component({

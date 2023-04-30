@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {PageableProducts} from "../interface/product/pagable-products";
-import {type} from "os";
 import {ProductService} from "../service/product/product.service";
 import {Search} from "../interface/search/search";
 
@@ -10,7 +9,10 @@ import {Search} from "../interface/search/search";
   styleUrls: ['./search-products-view.component.css']
 })
 export class SearchProductsViewComponent {
-  searchResults?:PageableProducts;
+  searchResults:PageableProducts = {
+    products:[],
+    number_of_pages: 0
+  };
   searchParams:Search = {} as Search;
 
   constructor(private productService:ProductService) {
@@ -33,5 +35,43 @@ export class SearchProductsViewComponent {
     }
     this.productService.searchProducts(newPageQuery);
 
+  }
+
+  getSeverityStatus(stock: Number):string {
+    if(stock > 500)
+    {
+      return 'success';
+    }
+
+    if(stock === 500)
+    {
+      return 'warning';
+    }
+
+    if(stock === 0)
+    {
+      return 'danger';
+    }
+
+    return 'danger'
+  }
+
+  getSeverity(stock: Number):string {
+    if(stock > 500)
+    {
+      return 'IN STOCK';
+    }
+
+    if(stock === 500)
+    {
+      return 'LOW STOCK';
+    }
+
+    if(stock === 0)
+    {
+      return 'OUT OF STOCK';
+    }
+
+    return 'ERROR'
   }
 }
