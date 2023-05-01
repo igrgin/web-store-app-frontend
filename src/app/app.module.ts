@@ -15,7 +15,7 @@ import {RippleModule} from "primeng/ripple";
 import {PaginatorModule} from "primeng/paginator";
 import {LoginComponent} from './login/login.component';
 import {ProductDetailsViewComponent} from './product-details-view/product-details-view.component';
-import { MenuViewComponent } from './menu-view/menu-view.component';
+import {MenuViewComponent} from './menu-view/menu-view.component';
 import {TabMenuModule} from "primeng/tabmenu";
 import {MegaMenuModule} from "primeng/megamenu";
 import {MenubarModule} from "primeng/menubar";
@@ -28,6 +28,10 @@ import {DividerModule} from "primeng/divider";
 import {DropdownModule} from "primeng/dropdown";
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {SliderModule} from "primeng/slider";
+import {HomeViewComponent} from './home-view/home-view.component';
+import {authenticationInterceptorProviders} from "./interceptor/authentication.interceptor";
+import { RegisterComponent } from './register/register.component';
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -38,7 +42,9 @@ import {SliderModule} from "primeng/slider";
     SearchComponent,
     LoginComponent,
     ProductDetailsViewComponent,
-    MenuViewComponent
+    MenuViewComponent,
+    HomeViewComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -61,9 +67,10 @@ import {SliderModule} from "primeng/slider";
     DropdownModule,
     BrowserAnimationsModule,
     NoopAnimationsModule,
-    SliderModule
+    SliderModule,
+    MatIconModule
   ],
-  providers: [],
+  providers: [authenticationInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
