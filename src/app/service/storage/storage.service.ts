@@ -1,34 +1,53 @@
 import { Injectable } from '@angular/core';
+import {CookieService} from "ngx-cookie-service";
 
-const USER_KEY = 'auth-user';
+const ACCESS_TOKEN = 'auth-access';
+const REFRESH_TOKEN = 'auth-refresh';
 @Injectable({
   providedIn: 'root'
 })
 export class StorageService {
 
-  constructor() { }
+  constructor(private cookieService:CookieService) { }
 
-  clean(): void {
+  cleanAccessToken(): void {
     window.sessionStorage.clear();
   }
 
-  public saveUser(user: any): void {
-    window.sessionStorage.removeItem(USER_KEY);
-    window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+  cleanRefreshToken(): void {
+    this.cookieService.delete(REFRESH_TOKEN)
   }
 
-  public getUser(): any {
-    const user = window.sessionStorage.getItem(USER_KEY);
-    if (user) {
-      return JSON.parse(user);
+  public saveAccessToken(accessToken: string): void {
+    window.sessionStorage.removeItem(ACCESS_TOKEN);
+    window.sessionStorage.setItem(ACCESS_TOKEN, JSON.stringify(accessToken));
+  }
+
+  public saveRefreshToken(refreshToken: any): void {
+    this.cookieService.delete(REFRESH_TOKEN);
+    this.cookieService.set(REFRESH_TOKEN,refreshToken);
+  }
+
+  public getAccessToken(): String | null {
+    return window.sessionStorage.getItem(ACCESS_TOKEN)
+  }
+
+  public getRefreshToken(): any {
+
+    if (!this.hasRefreshToken()) {
+      return null;
     }
 
-    return {};
+    return this.cookieService.get(REFRESH_TOKEN);
   }
 
   public isLoggedIn(): boolean {
-    const user = window.sessionStorage.getItem(USER_KEY);
-    return !!user;
+    const token = window.sessionStorage.getItem(ACCESS_TOKEN);
+    return !!token;
+  }
+
+  public hasRefreshToken(): boolean {
+    return this.cookieService.check(REFRESH_TOKEN);
   }
 
 }

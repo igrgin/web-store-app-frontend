@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../service/auth/auth.service";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -7,33 +9,32 @@ import {AuthService} from "../service/auth/auth.service";
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  form: any = {
-    username: null,
-    email: null,
-    password: null
-  };
-  isSuccessful = false;
-  isSignUpFailed = false;
+  form: FormGroup | undefined;
   errorMessage = '';
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    this.form = this.formBuilder.group({
+      email: '',
+      password: '',
+      first_name:'',
+      last_name:''
+    })
   }
 
   onSubmit(): void {
-    const { first_name, last_name, email, password } = this.form;
 
-    this.authService.register(email, password, first_name, last_name).subscribe({
-      next: data => {
-        console.log(data);
-        this.isSuccessful = true;
-        this.isSignUpFailed = false;
+    this.authService.register(this.form?.getRawValue()).subscribe({
+      next: _ => {
+        this.router.navigate(['/login'])
       },
       error: err => {
         this.errorMessage = err.error.message;
-        this.isSignUpFailed = true;
       }
     });
+
   }
+
+
 }

@@ -89,30 +89,28 @@ export class ProductService {
 
   searchProducts(searchQuery:Search): Observable<PageableProducts> {
 
-    let queryParams = new HttpParams();
-
-    if(searchQuery.name !== '')
-    {
-      queryParams.append("name",searchQuery.name);
-    }
-    if(searchQuery.category !== '')
-    {
-      queryParams.append("category",searchQuery.category);
-    }
+    let queryParams = new HttpParams().set(encodeURIComponent("name"),encodeURIComponent(searchQuery.name))
+      .set(encodeURIComponent("category"),encodeURIComponent(searchQuery.category))
+      .set("size",searchQuery.size).set("page",searchQuery.page)
+      .set("pMin",searchQuery.priceRange[0]).set("pMax",searchQuery.priceRange[1]);
 
     if(searchQuery.brands.length > 0 )
     {
-      queryParams.append("brands",searchQuery.brands.toString());
+      queryParams = new HttpParams().set(encodeURIComponent("brands"),encodeURIComponent(searchQuery.brands.toString()))
+        .set(encodeURIComponent("name"),encodeURIComponent(searchQuery.name))
+        .set(encodeURIComponent("category"),encodeURIComponent(searchQuery.category))
+        .set("size",searchQuery.size).set("page",searchQuery.page)
+        .set("pMin",searchQuery.priceRange[0]).set("pMax",searchQuery.priceRange[1]);
     }
 
-    queryParams.append("size",searchQuery.size);
-    queryParams.append("page",searchQuery.page);
+    console.log(queryParams.toString())
 
     return this.http.get<PageableProducts>(`${this.productUrl}/search`,{params:queryParams}).pipe(
         tap(_ => {
           console.log(`fetched products`)
+
         }),
-        catchError(this.handleError<PageableProducts>('getStudents', { products:[], number_of_pages:0}))
+        catchError(this.handleError<PageableProducts>('getProducts', { products:[], number_of_pages:0}))
       );
   }
 

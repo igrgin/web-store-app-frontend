@@ -1,76 +1,57 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
-  HttpEvent,
-  HttpInterceptor,
-  HttpHandler,
-  HttpRequest,
   HTTP_INTERCEPTORS,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
 } from '@angular/common/http';
 import {catchError, Observable, switchMap, throwError} from 'rxjs';
 import {AuthService} from "../service/auth/auth.service";
 import {StorageService} from "../service/storage/storage.service";
-import {EventBusService} from "../service/event-bus/event-bus.service";
-import {EventData} from "../class/event.class";
 
 @Injectable()
 export class AuthenticationInterceptor implements HttpInterceptor {
+  refresh = false;
 
-  private isRefreshing = false;
-  constructor(private storageService: StorageService,
-              private authService: AuthService,
-              private eventBusService: EventBusService) {}
+  constructor(private authService: AuthService, private storageService:StorageService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    request = request.clone({
-      withCredentials: true,
-    });
-
-    return next.handle(request).pipe(
-      catchError((error) => {
-        if (
-          error instanceof HttpErrorResponse &&
-          !request.url.includes('api/login') &&
-          error.status === 401
-        ) {
-          return this.handle401Error(request, next);
-        }
-
-        return throwError(() => error);
-      })
-    );
-  }
-
-  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-    if (!this.isRefreshing) {
-      this.isRefreshing = true;
-
-      if (this.storageService.isLoggedIn()) {
-        return this.authService.refreshToken().pipe(
-          switchMap(() => {
-            this.isRefreshing = false;
-
-            return next.handle(request);
-          }),
-          catchError((error) => {
-            this.isRefreshing = false;
-
-            if (error.status == '403') {
-              this.eventBusService.emit(new EventData('logout', null));
-            }
-
-            return throwError(() => error);
-          })
-        );
+    console.log(request.url)
+    console.log(request.params.keys())
+    const req = request.clone(this.storageService.getAccessToken() ? {
+      setHeaders:{
+        Authorization: `Bearer ${this.storageService.getAccessToken()}`,
       }
-    }
+    } : {});
 
-    return next.handle(request);
+    return next.handle(req).pipe(catchError((err:HttpErrorResponse) => {
+
+      if (err.status === 401 && !this.refresh)
+      {
+        this.refresh = true
+        return this.authService.refreshToken().pipe(
+          switchMap((_) => {
+            return next.handle(request.clone({
+              setHeaders:{
+                Authorization: `Bearer ${this.storageService.getAccessToken()}`,
+              }
+            }))
+          })
+        )
+      }
+      this.refresh = false
+      return throwError(() => err)
+    }));
+
   }
+
+
 
 
 }
 
 export const authenticationInterceptorProviders = [
-  { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true }
 ];

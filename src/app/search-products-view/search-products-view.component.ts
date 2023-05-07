@@ -13,27 +13,37 @@ export class SearchProductsViewComponent {
     products:[],
     number_of_pages: 0
   };
-  searchParams:Search = {} as Search;
+  searchParams?:Search
 
   constructor(private productService:ProductService) {
 
   }
 
-
   onSearchEventTriggered(searchValue:Search)
   {
-    this.searchParams = searchValue;
+    this.productService.searchProducts(searchValue).subscribe(value => {
+      this.searchParams=searchValue
+      console.log("!!")
+      console.log(value)
+      this.searchResults=value
+    });
   }
 
   onPageChange($event: any) {
-    const newPageQuery: Search={
-      name:this.searchParams.name,
-      category:this.searchParams.category,
-      brands:this.searchParams.brands,
-      page:$event.first - 1,
-      size:$event.rows
+    if(this.searchParams)
+    {
+      const newPageQuery: Search={
+        name:this.searchParams.name,
+        category:this.searchParams.category,
+        brands:this.searchParams.brands,
+        page:$event.first - 1,
+        size:$event.rows,
+        priceRange:this.searchParams.priceRange
+      }
+      this.onSearchEventTriggered(newPageQuery)
     }
-    this.productService.searchProducts(newPageQuery);
+
+
 
   }
 
@@ -74,4 +84,6 @@ export class SearchProductsViewComponent {
 
     return 'ERROR'
   }
+
+
 }

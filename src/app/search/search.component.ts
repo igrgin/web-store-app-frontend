@@ -6,11 +6,11 @@ import {Search} from "../interface/search/search";
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent implements OnInit{
+export class SearchComponent implements OnInit {
 
-  searchEventOutput:Search = {} as Search;
-  allCategories:string[] = [];
-  allBrands:string[]=[];
+  searchEventOutput: Search = { priceRange:[20, 80]} as Search
+  allCategories: string[] = [];
+  allBrands: string[] = [];
   rangeValues: number[] = [20, 80];
   minMaxRangeValues: number[] = [0, 1000];
   @Output()
@@ -20,14 +20,17 @@ export class SearchComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.allCategories.push("test","test1")
-    this.allBrands.push("test2","test3")
-    console.log(this.allBrands)
+    this.allCategories.push("Cameras")
+    this.allBrands.push("Microsoft")
   }
 
-  onSearchEvent()
-  {
-    this.searchEvent.emit(this.searchEventOutput);
+  onSearchEvent() {
+    if (this.searchEventOutput) {
+      this.searchEventOutput.page = 1
+      this.searchEventOutput.size = 10
+      this.searchEvent.emit(this.searchEventOutput);
+    }
+
   }
 
 }

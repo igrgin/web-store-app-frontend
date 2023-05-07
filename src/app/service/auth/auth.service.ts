@@ -1,49 +1,73 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from "rxjs";
+import {Observable, tap} from "rxjs";
+import {UserProfile} from "../../interface/auth/user-profile";
+import {LoginModel} from "../../interface/auth/login-model";
+import {TokenModel} from "../../interface/auth/token-model";
+import {RegisterModel} from "../../interface/auth/register-model";
+import {StorageService} from "../storage/storage.service";
 
 const AUTH_API = 'http://localhost:8080/auth/api/';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
 };
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) {
+  onLoginStatusChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  constructor(private http: HttpClient, private storageService:StorageService) {
   }
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post(
+
+  login(payload: LoginModel): Observable<TokenModel> {
+    return this.http.post<TokenModel>(
       AUTH_API + 'authenticate',
-      {
-        email,
-        password,
-      },
-      httpOptions
-    );
+      payload,
+      {withCredentials: true, headers: {'Content-Type': 'application/json'}}
+    ).pipe(
+      tap((value) => {
+        this.storageService.saveRefreshToken(value.refresh_token)
+        this.storageService.saveAccessToken(value.access_token)
+        this.onLoginStatusChange.emit(true);
+
+      }));
   }
 
-  register(email: string, password: string, first_name:string, last_name:string): Observable<any> {
+  register(registerModel: RegisterModel): Observable<any> {
     return this.http.post(
       AUTH_API + 'register',
-      {
-        email,
-        password,
-        first_name,
-        last_name
-      },
+      registerModel,
       httpOptions
     );
   }
 
   logout(): Observable<any> {
-    return this.http.post(AUTH_API + 'logout', { }, httpOptions);
+    return this.http.post(AUTH_API + 'logout', {}, httpOptions).pipe(
+      tap(() => {
+        this.storageService.cleanAccessToken()
+        this.storageService.cleanRefreshToken()
+        this.onLoginStatusChange.emit(false);
+      }));
   }
 
-  refreshToken() {
-    return this.http.post(AUTH_API + 'refresh', { }, httpOptions);
+  refreshToken(): Observable<TokenModel> {
+    return this.http.post<TokenModel>(AUTH_API + 'refresh', {},
+      {withCredentials: true, headers: {'Content-Type': 'application/json'}}).pipe(
+      tap((value) => {
+        this.storageService.saveRefreshToken(value.refresh_token)
+        this.storageService.saveAccessToken(value.access_token)
+      }));
   }
+
+  getUserProfile():Observable<UserProfile>
+  {
+    return this.http.get<UserProfile>('user/api/user',
+      {withCredentials: true, headers: {'Content-Type': 'application/json'}});
+
+  }
+
 }

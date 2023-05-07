@@ -1,7 +1,7 @@
 <app-search (searchEvent)="onSearchEventTriggered($event)"></app-search>
 
 <div class="card"  style="margin-top: 20px;">
-  <p-dataView [value]="searchResults.products" [rows]="5" [paginator]="true">
+  <p-dataView [value]="searchResults.products" [rows]="5" [paginator]="true" (onPage)="onPageChange($event)">
     <ng-template *ngFor ="let product of searchResults.products" pTemplate="listItem">
       <div class="col-12">
         <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">

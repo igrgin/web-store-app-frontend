@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../service/auth/auth.service";
-import {StorageService} from "../service/storage/storage.service";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -8,45 +9,29 @@ import {StorageService} from "../service/storage/storage.service";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  form: any = {
-    email: null,
-    password: null
-  };
-  isLoggedIn = false;
-  isLoginFailed = false;
+  form: FormGroup | undefined;
   errorMessage = '';
-  roles: string[] = [];
 
-  constructor(private authService: AuthService, private storageService: StorageService) { }
+  constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    if (this.storageService.isLoggedIn()) {
-      this.isLoggedIn = true;
-      this.roles = this.storageService.getUser().roles;
-    }
+    this.form = this.formBuilder.group({
+      email: '',
+      password: ''
+    })
   }
 
   onSubmit(): void {
-    const { email, password } = this.form;
 
-    this.authService.login(email, password).subscribe({
-      next: data => {
-        this.storageService.saveUser(data);
-
-        this.isLoginFailed = false;
-        this.isLoggedIn = true;
-        this.roles = this.storageService.getUser().roles;
-        this.reloadPage();
+    this.authService.login(this.form?.getRawValue()).subscribe({
+      next: _ => {
+        this.router.navigate(['/home']);
       },
       error: err => {
         this.errorMessage = err.error.message;
-        this.isLoginFailed = true;
       }
     });
-  }
 
-  reloadPage(): void {
-    window.location.reload();
   }
 
 }

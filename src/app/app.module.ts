@@ -10,7 +10,7 @@ import {AppRoutingModule} from "./app-routing.module";
 import {SearchComponent} from './search/search.component';
 import {InputTextModule} from "primeng/inputtext";
 import {ButtonModule} from "primeng/button";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RippleModule} from "primeng/ripple";
 import {PaginatorModule} from "primeng/paginator";
 import {LoginComponent} from './login/login.component';
@@ -30,7 +30,7 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-b
 import {SliderModule} from "primeng/slider";
 import {HomeViewComponent} from './home-view/home-view.component';
 import {authenticationInterceptorProviders} from "./interceptor/authentication.interceptor";
-import { RegisterComponent } from './register/register.component';
+import {RegisterComponent} from './register/register.component';
 import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
@@ -68,9 +68,11 @@ import {MatIconModule} from "@angular/material/icon";
     BrowserAnimationsModule,
     NoopAnimationsModule,
     SliderModule,
-    MatIconModule
+    MatIconModule,
+    ReactiveFormsModule
   ],
   providers: [authenticationInterceptorProviders],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
