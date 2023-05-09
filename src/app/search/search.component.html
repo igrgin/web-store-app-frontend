@@ -13,10 +13,10 @@
   <p-divider></p-divider>
   <div class="flex-item">
     <div>
-      <p-dropdown *ngIf="searchEventOutput" [options]="allCategories" [(ngModel)]="searchEventOutput.category" placeholder="Choose a Category"></p-dropdown>
+      <p-dropdown *ngIf="searchEventOutput && allSubcategories" [options]="allSubcategories" [(ngModel)]="searchEventOutput.category" placeholder="Choose a Category"></p-dropdown>
     </div>
     <div>
-      <p-multiSelect *ngIf="searchEventOutput" [options]="allBrands" [(ngModel)]="searchEventOutput.brands" placeholder="Choose Brands"></p-multiSelect>
+      <p-multiSelect *ngIf="searchEventOutput && allBrands" [options]="allBrands" [(ngModel)]="searchEventOutput.brands" placeholder="Choose Brands"></p-multiSelect>
     </div>
   </div>
 </div>

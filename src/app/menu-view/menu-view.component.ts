@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MenuItem} from "primeng/api";
 import {AuthService} from "../service/auth/auth.service";
 import {StorageService} from "../service/storage/storage.service";
+import {CategoryService} from "../service/category/category.service";
 
 @Component({
   selector: 'app-menu-view',
@@ -9,9 +10,10 @@ import {StorageService} from "../service/storage/storage.service";
   styleUrls: ['./menu-view.component.css']
 })
 export class MenuViewComponent implements OnInit {
-  items: MenuItem[] = [];
+  items?: MenuItem[];
+  mainCategories:MenuItem[] = [];
 
-  constructor(private storageService: StorageService, private authService: AuthService) {
+  constructor(private storageService: StorageService, private authService: AuthService, private categoryService: CategoryService) {
   }
 
   ngOnInit() {
@@ -21,12 +23,23 @@ export class MenuViewComponent implements OnInit {
 
   alterMenuBar()
   {
+    this.categoryService.getTopLevelCategories().subscribe(res => {
+      res.forEach(cat => {
+        this.mainCategories.push({
+          label: `${cat.name}`,
+          command: () => {
+            console.log(`${cat.name}`)
+          }
+        })
+      })
+    })
+
     this.items = [{
       label: 'Home',
       icon: 'pi pi-fw pi-home',
       routerLink: "/home"
     },
-      {label: 'Search', icon: 'pi pi-fw pi-search', routerLink: "/search"},
+      {label: 'Categories', icon: 'pi pi-fw pi-category', items: this.mainCategories},
       {label: 'Cart', icon: 'pi pi-fw pi-shopping-cart', routerLink: "/user/cart"}];
 
     if (this.storageService.isLoggedIn()) {

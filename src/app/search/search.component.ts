@@ -1,5 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Search} from "../interface/search/search";
+import {CategoryService} from "../service/category/category.service";
 
 @Component({
   selector: 'app-search',
@@ -9,19 +10,18 @@ import {Search} from "../interface/search/search";
 export class SearchComponent implements OnInit {
 
   searchEventOutput: Search = { priceRange:[20, 80]} as Search
-  allCategories: string[] = [];
+  allSubcategories: string[] = [];
   allBrands: string[] = [];
-  rangeValues: number[] = [20, 80];
   minMaxRangeValues: number[] = [0, 1000];
   @Output()
   searchEvent: EventEmitter<Search> = new EventEmitter<Search>();
 
-  constructor() {
+  constructor(private categoryService:CategoryService) {
   }
 
   ngOnInit(): void {
-    this.allCategories.push("Cameras")
-    this.allBrands.push("Microsoft")
+    if(this.allSubcategories.length ==  0) this.allSubcategories = ["Cameras"]
+    if(this.allBrands.length ==  0) this.allBrands = ["Microsoft"]
   }
 
   onSearchEvent() {
