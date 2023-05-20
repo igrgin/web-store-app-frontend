@@ -105,7 +105,7 @@ export class ProductService {
     let queryParams = new HttpParams().set(encodeURIComponent("name"),encodeURIComponent(searchQuery.name))
       .set(encodeURIComponent("category"),encodeURIComponent(searchQuery.category))
       .set("size",searchQuery.size).set("page",searchQuery.page)
-      .set("pMin",searchQuery.priceRange[0]).set("pMax",searchQuery.priceRange[1]);
+      .set("pMin",searchQuery.priceRange ? searchQuery.priceRange[0]: 20).set("pMax",searchQuery.priceRange ? searchQuery.priceRange[1]: 80);
 
     if(searchQuery.brands.length > 0 )
     {

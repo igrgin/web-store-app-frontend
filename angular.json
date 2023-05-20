@@ -102,5 +102,8 @@
       }
     }
   },
-  "defaultProject": "web-store-app-frontend"
+  "defaultProject": "web-store-app-frontend",
+  "cli": {
+    "analytics": false
+  }
 }
