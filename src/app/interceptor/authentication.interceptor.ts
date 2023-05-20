@@ -18,8 +18,6 @@ export class AuthenticationInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private storageService:StorageService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    console.log(request.url)
-    console.log(request.params.keys())
     const req = request.clone(this.storageService.getAccessToken() ? {
       setHeaders:{
         Authorization: `Bearer ${this.storageService.getAccessToken()}`,

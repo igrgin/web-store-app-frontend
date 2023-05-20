@@ -8,17 +8,16 @@ import {CategoryDto} from "../../interface/category/category-dto";
 })
 export class CategoryService {
 
-  private productUrl: String = 'http://localhost:8080/category/api';
+  private categoryUrl: String = 'http://localhost:8080/category/api';
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   getSubcategoriesByParentId(parentId: number): Observable<CategoryDto[]> {
 
-    return this.http.get<CategoryDto[]>(`${this.productUrl}/find/category/${parentId}`)
+    return this.http.get<CategoryDto[]>(`${this.categoryUrl}/public/find/subcategory/id/${parentId}`,this.httpOptions)
       .pipe(
         tap(_ => {
           console.log(`fetched Subcategories`)
@@ -26,10 +25,21 @@ export class CategoryService {
         catchError(this.handleError<CategoryDto[]>('getSubcategoriesByParentId', []))
       );
   }
+  getSubcategoriesByCategoryName(categoryName: string): Observable<CategoryDto[]> {
+
+    return this.http.get<CategoryDto[]>(`${this.categoryUrl}/public/find/subcategory/name/${categoryName}`,this.httpOptions)
+      .pipe(
+        tap(_ => {
+          console.log(`fetched Subcategories`)
+        }),
+        catchError(this.handleError<CategoryDto[]>('getSubcategoriesByCategoryName', []))
+      );
+
+  }
 
   getTopLevelCategories(): Observable<CategoryDto[]> {
 
-    return this.http.get<CategoryDto[]>(`${this.productUrl}/find/top`)
+    return this.http.get<CategoryDto[]>(`${this.categoryUrl}/public/find/top`,this.httpOptions)
       .pipe(
         tap(_ => {
           console.log(`fetched Top Level Categories`)
@@ -45,4 +55,6 @@ export class CategoryService {
       return of(result as T);
     };
   }
+
+
 }

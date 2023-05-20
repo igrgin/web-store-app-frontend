@@ -23,7 +23,6 @@ export class SearchProductsViewComponent {
   {
     this.productService.searchProducts(searchValue).subscribe(value => {
       this.searchParams=searchValue
-      console.log("!!")
       console.log(value)
       this.searchResults=value
     });

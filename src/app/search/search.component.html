@@ -7,7 +7,7 @@
   </div>
   <p-divider></p-divider>
   <div class="card flex">
-    <span>Price Range: {{searchEventOutput.priceRange[0]}} - {{searchEventOutput.priceRange[1]}}</span><br><br>
+    <span>Price Range: {{searchEventOutput?.priceRange ? searchEventOutput?.priceRange : [0]}} - {{searchEventOutput?.priceRange ? searchEventOutput?.priceRange : [1]}}</span><br><br>
     <p-slider [(ngModel)]="searchEventOutput.priceRange" [range]="true" [min]="minMaxRangeValues[0]" [max]="minMaxRangeValues[1]" aria-label="label_number"></p-slider>
   </div>
   <p-divider></p-divider>
@@ -17,6 +17,9 @@
     </div>
     <div>
       <p-multiSelect *ngIf="searchEventOutput && allBrands" [options]="allBrands" [(ngModel)]="searchEventOutput.brands" placeholder="Choose Brands"></p-multiSelect>
+    </div>
+    <div>
+      <p-dropdown [options]="pageSize" [(ngModel)]="searchEventOutput.size" placeholder="Per Page"></p-dropdown>
     </div>
   </div>
 </div>

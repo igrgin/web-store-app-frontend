@@ -3,6 +3,7 @@ import {MenuItem} from "primeng/api";
 import {AuthService} from "../service/auth/auth.service";
 import {StorageService} from "../service/storage/storage.service";
 import {CategoryService} from "../service/category/category.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-menu-view',
@@ -10,37 +11,18 @@ import {CategoryService} from "../service/category/category.service";
   styleUrls: ['./menu-view.component.css']
 })
 export class MenuViewComponent implements OnInit {
-  items?: MenuItem[];
-  mainCategories:MenuItem[] = [];
+  items: MenuItem[] = [];
+  categories: MenuItem[] = []
 
-  constructor(private storageService: StorageService, private authService: AuthService, private categoryService: CategoryService) {
+  constructor(private storageService: StorageService, private authService: AuthService, private router:Router, private categoryService: CategoryService) {
   }
 
   ngOnInit() {
-   this.alterMenuBar()
-   this.authService.onLoginStatusChange.subscribe(() => this.alterMenuBar());
-  }
-
-  alterMenuBar()
-  {
-    this.categoryService.getTopLevelCategories().subscribe(res => {
-      res.forEach(cat => {
-        this.mainCategories.push({
-          label: `${cat.name}`,
-          command: () => {
-            console.log(`${cat.name}`)
-          }
-        })
-      })
-    })
-
     this.items = [{
       label: 'Home',
       icon: 'pi pi-fw pi-home',
       routerLink: "/home"
-    },
-      {label: 'Categories', icon: 'pi pi-fw pi-category', items: this.mainCategories},
-      {label: 'Cart', icon: 'pi pi-fw pi-shopping-cart', routerLink: "/user/cart"}];
+    }, {label: 'Cart', icon: 'pi pi-fw pi-shopping-cart', routerLink: "/user/cart"}];
 
     if (this.storageService.isLoggedIn()) {
       this.items.push({
@@ -64,6 +46,24 @@ export class MenuViewComponent implements OnInit {
           routerLink: 'login'
         });
     }
+    if(this.categories.length == 0) this.refreshMenubar()
+
+    this.authService.onLoginStatusChange.subscribe(() => this.refreshMenubar());
+  }
+
+  refreshMenubar() {
+    this.categoryService.getTopLevelCategories().subscribe(res => {
+      res.forEach(cat => {
+        this.categories.push({
+          label: `${cat.name}`,
+          command: () => {
+            this.router.navigate(['/search', {category:cat.id}])
+          }
+        })
+      })
+      console.log(this.categories)
+      this.items.splice(1,0,...this.categories)
+    })
   }
 
   logout(): any {
