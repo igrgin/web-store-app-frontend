@@ -1,25 +1,22 @@
 <div class="flex-container">
   <div class="flex-item">
     <div class="p-inputgroup">
-      <input type="text" pInputText placeholder="Search" [(ngModel)]="searchEventOutput.name">
+      <input type="text" pInputText placeholder="Search" [defaultValue]="" [(ngModel)]="searchEventOutput.name">
       <button pButton pRipple class="pi" (click)="onSearchEvent()"><i class="pi pi-search"></i></button>
     </div>
   </div>
   <p-divider></p-divider>
   <div class="card flex">
-    <span>Price Range: {{searchEventOutput?.priceRange ? searchEventOutput?.priceRange : [0]}} - {{searchEventOutput?.priceRange ? searchEventOutput?.priceRange : [1]}}</span><br><br>
+    <span>Price Range: {{searchEventOutput.priceRange ? searchEventOutput.priceRange[0] : 0}} - {{searchEventOutput.priceRange ? searchEventOutput.priceRange[1] : 1000}}</span><br><br>
     <p-slider [(ngModel)]="searchEventOutput.priceRange" [range]="true" [min]="minMaxRangeValues[0]" [max]="minMaxRangeValues[1]" aria-label="label_number"></p-slider>
   </div>
   <p-divider></p-divider>
   <div class="flex-item">
     <div>
-      <p-dropdown *ngIf="searchEventOutput && allSubcategories" [options]="allSubcategories" [(ngModel)]="searchEventOutput.category" placeholder="Choose a Category"></p-dropdown>
+      <p-dropdown *ngIf="searchEventOutput && allSubcategories" [options]="allSubcategories" [(ngModel)]="searchEventOutput.subcategory" placeholder="Choose a Category"></p-dropdown>
     </div>
     <div>
       <p-multiSelect *ngIf="searchEventOutput && allBrands" [options]="allBrands" [(ngModel)]="searchEventOutput.brands" placeholder="Choose Brands"></p-multiSelect>
-    </div>
-    <div>
-      <p-dropdown [options]="pageSize" [(ngModel)]="searchEventOutput.size" placeholder="Per Page"></p-dropdown>
     </div>
   </div>
 </div>

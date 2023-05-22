@@ -11,26 +11,26 @@ import {BrandService} from "../service/brand/brand.service";
 })
 export class SearchComponent implements OnInit {
 
-  searchEventOutput: Search = {priceRange:[20,80]} as Search
+  searchEventOutput: Search = {priceRange:[20,80], name:'', brands:[] as String[], page:0,size:40} as Search
   allSubcategories: string[] = [];
   allBrands: string[] = [];
-  minMaxRangeValues: number[] = [0, 1000];
+  minMaxRangeValues: number[] = [0, 4000];
   @Output()
   searchEvent: EventEmitter<Search> = new EventEmitter<Search>();
-  pageSize: number[] = [20,40,60,80,100];
 
   constructor(private categoryService:CategoryService, private brandService:BrandService, private router:ActivatedRoute) {
   }
 
   ngOnInit(): void {
     this.router.params.subscribe(params => {
+      this.searchEventOutput.category=params['categoryName']
       this.allSubcategories = []
       this.allBrands = []
-      this.categoryService.getSubcategoriesByParentId(params['category']).subscribe(value =>
+      this.categoryService.getSubcategoriesByParentId(params['categoryId']).subscribe(value =>
         { const categoryNames = value.map(value1 => value1.name)
           this.allSubcategories.push(...categoryNames)
         })
-      this.brandService.getBrandsByParentId(params['category']).subscribe(
+      this.brandService.getBrandsByParentId(params['categoryId']).subscribe(
         value => { const brandsNames = value.map(value1 => value1.name)
           this.allBrands.push(...brandsNames)}
       )

@@ -57,7 +57,7 @@ export class MenuViewComponent implements OnInit {
         this.categories.push({
           label: `${cat.name}`,
           command: () => {
-            this.router.navigate(['/search', {category:cat.id}])
+            this.router.navigate(['/search', {categoryId:cat.id, categoryName: `${cat.name}`}])
           }
         })
       })

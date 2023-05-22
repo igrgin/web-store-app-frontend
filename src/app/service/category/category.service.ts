@@ -25,6 +25,18 @@ export class CategoryService {
         catchError(this.handleError<CategoryDto[]>('getSubcategoriesByParentId', []))
       );
   }
+
+  getCategoryById(id: number): Observable<CategoryDto> {
+
+    return this.http.get<CategoryDto>(`${this.categoryUrl}/public/find/category/${id}`,this.httpOptions)
+        .pipe(
+            tap(_ => {
+              console.log(`fetched category`)
+            }),
+            catchError(this.handleError<CategoryDto>('getSubcategoriesByParentId', {} as CategoryDto))
+        );
+  }
+
   getSubcategoriesByCategoryName(categoryName: string): Observable<CategoryDto[]> {
 
     return this.http.get<CategoryDto[]>(`${this.categoryUrl}/public/find/subcategory/name/${categoryName}`,this.httpOptions)

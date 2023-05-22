@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {PageableProducts} from "../interface/product/pagable-products";
 import {ProductService} from "../service/product/product.service";
 import {Search} from "../interface/search/search";
@@ -11,9 +11,13 @@ import {Search} from "../interface/search/search";
 export class SearchProductsViewComponent {
   searchResults:PageableProducts = {
     products:[],
-    number_of_pages: 0
+    total_pages:0,
+    total_products:0
   };
   searchParams?:Search
+  pageSize: number[] = [20,40,60,80,100];
+  selectedPageSize?:number;
+  @ViewChild('dataView', { static: false }) dataView?: DataView;
 
   constructor(private productService:ProductService) {
 
@@ -28,15 +32,17 @@ export class SearchProductsViewComponent {
     });
   }
 
-  onPageChange($event: any) {
+  onPageChange(event:any) {
     if(this.searchParams)
     {
+      console.log(event.rows)
       const newPageQuery: Search={
         name:this.searchParams.name,
         category:this.searchParams.category,
+        subcategory:this.searchParams.subcategory,
         brands:this.searchParams.brands,
-        page:$event.first - 1,
-        size:$event.rows,
+        page:event.target.value - 1,
+        size:event.rows,
         priceRange:this.searchParams.priceRange
       }
       this.onSearchEventTriggered(newPageQuery)
@@ -46,43 +52,10 @@ export class SearchProductsViewComponent {
 
   }
 
-  getSeverityStatus(stock: Number):string {
-    if(stock > 500)
-    {
-      return 'success';
-    }
-
-    if(stock === 500)
-    {
-      return 'warning';
-    }
-
-    if(stock === 0)
-    {
-      return 'danger';
-    }
-
-    return 'danger'
+  loadData($event: any) {
+    console.log($event.rows)
+    const firstRowIndex = $event.first;
+    const rowsPerPage = $event.rows;
+    this.selectedPageSize = Math.min(rowsPerPage, this.searchResults.total_products - firstRowIndex);
   }
-
-  getSeverity(stock: Number):string {
-    if(stock > 500)
-    {
-      return 'IN STOCK';
-    }
-
-    if(stock === 500)
-    {
-      return 'LOW STOCK';
-    }
-
-    if(stock === 0)
-    {
-      return 'OUT OF STOCK';
-    }
-
-    return 'ERROR'
-  }
-
-
 }
