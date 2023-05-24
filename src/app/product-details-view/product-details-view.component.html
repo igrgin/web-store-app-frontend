@@ -1,1 +1,12 @@
-<p>product-details-view works!</p>
+<div *ngIf="selectedProduct" class="product-container">
+    <img class="product-image" [src]="selectedProduct.image_url" alt="Product Image">
+    <div class="product-details">
+        <h2>{{ selectedProduct.name }}</h2>
+        <p><b>Brand:</b> {{ selectedProduct.brand }}</p>
+        <p><b>Price:</b> ${{ selectedProduct.price }}</p>
+        <p><b>Category:</b> {{ selectedProduct.category }}</p>
+        <p><b>Stock:</b> {{ selectedProduct.stock }}</p>
+        <p><b>Description:</b> {{ selectedProduct.description }}</p>
+    </div>
+    <button pButton type="button" label="Buy" class="p-button-success"></button>
+</div>

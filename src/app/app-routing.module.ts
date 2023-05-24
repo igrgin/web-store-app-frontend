@@ -11,7 +11,7 @@ import {RegisterComponent} from "./register/register.component";
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   {path: 'home', component: HomeViewComponent},
-  {path: 'detail/:name', component: ProductDetailsViewComponent},
+  {path: 'search/:id', component: ProductDetailsViewComponent},
   {path: 'checkout/cart', component: CartViewComponent},
   {path: 'profile/transactions', component: TransactionViewComponent},
   {path: 'login', component: LoginComponent},
