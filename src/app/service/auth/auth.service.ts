@@ -54,7 +54,7 @@ export class AuthService {
       }));
   }
 
-  refreshToken(): Observable<TokenModel> {
+  refresh(): Observable<TokenModel> {
     return this.http.post<TokenModel>(AUTH_API + 'refresh', {},
       {withCredentials: true, headers: {'Content-Type': 'application/json'}}).pipe(
       tap((value) => {

@@ -14,16 +14,21 @@ export class MenuViewComponent implements OnInit {
   items: MenuItem[] = [];
   categories: MenuItem[] = []
 
-  constructor(private storageService: StorageService, private authService: AuthService, private router:Router, private categoryService: CategoryService) {
+  constructor(private storageService: StorageService, private authService: AuthService, private router:Router,
+              private categoryService: CategoryService) {
   }
 
   ngOnInit() {
+    if(this.storageService.hasRefreshToken() && !this.storageService.isLoggedIn())
+    {
+      this.authService.refresh().subscribe(_ => console.log("refreshed"))
+    }
     this.items = [{
       label: 'Home',
       icon: 'pi pi-fw pi-home',
       routerLink: "/home"
     }, {label: 'Cart', icon: 'pi pi-fw pi-shopping-cart', routerLink: "/user/cart"}];
-
+    console.log(this.storageService.isLoggedIn())
     if (this.storageService.isLoggedIn()) {
       this.items.push({
         label: 'My profile',
@@ -52,12 +57,14 @@ export class MenuViewComponent implements OnInit {
   }
 
   refreshMenubar() {
+    if(this.categories.length == 0)
     this.categoryService.getTopLevelCategories().subscribe(res => {
       res.forEach(cat => {
         this.categories.push({
           label: `${cat.name}`,
           command: () => {
-            this.router.navigate(['/search', {categoryId:cat.id, categoryName: `${cat.name}`}])
+            this.router.navigate(['/search'],{queryParams:{categoryId:cat.id, categoryName: `${cat.name}`},
+              queryParamsHandling: "merge"})
           }
         })
       })
