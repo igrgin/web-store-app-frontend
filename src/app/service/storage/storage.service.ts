@@ -20,7 +20,7 @@ export class StorageService {
 
   public saveAccessToken(accessToken: string): void {
     window.sessionStorage.removeItem(ACCESS_TOKEN);
-    window.sessionStorage.setItem(ACCESS_TOKEN, JSON.stringify(accessToken));
+    window.sessionStorage.setItem(ACCESS_TOKEN, accessToken);
   }
 
   public saveRefreshToken(refreshToken: any): void {
