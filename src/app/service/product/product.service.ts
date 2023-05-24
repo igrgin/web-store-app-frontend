@@ -56,7 +56,7 @@ export class ProductService {
       );
   }
 
-  getProductById(id:String): Observable<Product> {
+  getProductById(id:string): Observable<Product> {
 
     return this.http.get<Product>(`${this.productUrl}/private/find/id/${id}`)
       .pipe(
