@@ -3,7 +3,7 @@ import {MenuItem} from "primeng/api";
 import {AuthService} from "../service/auth/auth.service";
 import {StorageService} from "../service/storage/storage.service";
 import {CategoryService} from "../service/category/category.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-menu-view',
@@ -11,24 +11,24 @@ import {Router} from "@angular/router";
   styleUrls: ['./menu-view.component.css']
 })
 export class MenuViewComponent implements OnInit {
+  counter: number = 0
   items: MenuItem[] = [];
   categories: MenuItem[] = []
 
-  constructor(private storageService: StorageService, private authService: AuthService, private router:Router,
-              private categoryService: CategoryService) {
+  constructor(private storageService: StorageService, private authService: AuthService, private router: Router,
+              private categoryService: CategoryService, private route:ActivatedRoute) {
   }
 
   ngOnInit() {
-    if(this.storageService.hasRefreshToken() && !this.storageService.isLoggedIn())
-    {
-      this.authService.refresh().subscribe(_ => console.log("refreshed"))
-    }
+
     this.items = [{
       label: 'Home',
       icon: 'pi pi-fw pi-home',
       routerLink: "/home"
     }, {label: 'Cart', icon: 'pi pi-fw pi-shopping-cart', routerLink: "/user/cart"}];
-    console.log(this.storageService.isLoggedIn())
+
+    if (this.categories.length == 0) this.refreshMenubarCategories()
+
     if (this.storageService.isLoggedIn()) {
       this.items.push({
         label: 'My profile',
@@ -51,25 +51,20 @@ export class MenuViewComponent implements OnInit {
           routerLink: 'login'
         });
     }
-    if(this.categories.length == 0) this.refreshMenubar()
-
-    this.authService.onLoginStatusChange.subscribe(() => this.refreshMenubar());
+    this.authService.onLoginStatusChange.subscribe(value => this.refreshMenubarLoginState(value));
   }
 
-  refreshMenubar() {
-    if(this.categories.length == 0)
+  refreshMenubarCategories() {
+    this.categories = []
     this.categoryService.getTopLevelCategories().subscribe(res => {
       res.forEach(cat => {
+        console.log(cat.name)
         this.categories.push({
           label: `${cat.name}`,
-          command: () => {
-            this.router.navigate(['/search'],{queryParams:{categoryId:cat.id, categoryName: `${cat.name}`},
-              queryParamsHandling: "merge"})
-          }
+          routerLink: `/search/${cat.name}`,
         })
       })
-      console.log(this.categories)
-      this.items.splice(1,0,...this.categories)
+        this.items.splice(1, 0, ...this.categories)
     })
   }
 
@@ -79,5 +74,33 @@ export class MenuViewComponent implements OnInit {
         console.log(err);
       }
     });
+  }
+
+  private refreshMenubarLoginState(isLoggedIn: boolean) {
+    return isLoggedIn ? this.login() : this.logout();
+  }
+
+  private login() {
+    let index = this.items.indexOf({
+      label: 'register',
+      icon: 'pi pi-fw pi-user-plus',
+      routerLink: 'register'
+    });
+    this.items.splice(index, 1);
+    index = this.items.indexOf({
+      label: 'login',
+      icon: 'pi pi-fw pi-sign-in',
+      routerLink: 'login'
+    });
+    this.items.splice(index, 1);
+    this.items.push({
+      label: 'My profile',
+      icon: 'pi pi-fw pi-user',
+      items: [{label: 'My Transactions', icon: 'pi pi-fw pi-credit-card', routerLink: "profile/transactions"}, {
+        label: 'logout', icon: 'pi pi-fw pi-sign-out', command: () => {
+          this.logout();
+        }
+      },]
+    })
   }
 }

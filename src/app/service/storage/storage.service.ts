@@ -11,7 +11,7 @@ export class StorageService {
   constructor(private cookieService:CookieService) { }
 
   cleanAccessToken(): void {
-    window.sessionStorage.clear();
+    sessionStorage.clear();
   }
 
   cleanRefreshToken(): void {
@@ -19,8 +19,8 @@ export class StorageService {
   }
 
   public saveAccessToken(accessToken: string): void {
-    window.sessionStorage.removeItem(ACCESS_TOKEN);
-    window.sessionStorage.setItem(ACCESS_TOKEN, accessToken);
+    sessionStorage.removeItem(ACCESS_TOKEN);
+    sessionStorage.setItem(ACCESS_TOKEN, accessToken);
   }
 
   public saveRefreshToken(refreshToken: any): void {
@@ -29,7 +29,7 @@ export class StorageService {
   }
 
   public getAccessToken(): String | null {
-    return window.sessionStorage.getItem(ACCESS_TOKEN)
+    return sessionStorage.getItem(ACCESS_TOKEN)
   }
 
   public getRefreshToken(): any {
@@ -42,8 +42,8 @@ export class StorageService {
   }
 
   public isLoggedIn(): boolean {
-    const token = window.sessionStorage.getItem(ACCESS_TOKEN);
-    return !!token;
+    const token = sessionStorage.getItem(ACCESS_TOKEN);
+    return token != null || this.hasRefreshToken();
   }
 
   public hasRefreshToken(): boolean {

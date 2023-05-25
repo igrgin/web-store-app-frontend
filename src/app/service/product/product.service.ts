@@ -27,8 +27,8 @@ export class ProductService {
         queryParams = queryParams.append("pMin",searchQuery.priceRange[0])
         queryParams = queryParams.append("pMax",searchQuery.priceRange[1])
       }
-      if(searchQuery.page >= 0) queryParams = queryParams.append("page",encodeURIComponent(searchQuery.page))
-      if(searchQuery.size > 0) queryParams = queryParams.append("size",encodeURIComponent(searchQuery.size))
+      if(searchQuery.page && searchQuery.page >= 0) queryParams = queryParams.append("page",encodeURIComponent(searchQuery.page))
+      if(searchQuery.size && searchQuery.size > 0) queryParams = queryParams.append("size",encodeURIComponent(searchQuery.size))
     }
 
 

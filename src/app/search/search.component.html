@@ -4,6 +4,9 @@
       <input type="text" pInputText placeholder="Search" [defaultValue]="" [(ngModel)]="searchEventOutput.name">
       <button pButton pRipple class="pi" (click)="onSearchEvent()"><i class="pi pi-search"></i></button>
     </div>
+    <div>
+      <p-dropdown *ngIf="searchEventOutput && sizeValues" [options]="sizeValues" [(ngModel)]="searchEventOutput.size" placeholder="size"></p-dropdown>
+    </div>
   </div>
   <p-divider></p-divider>
   <div class="card flex">

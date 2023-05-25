@@ -2,26 +2,26 @@
   <form *ngIf="form" [formGroup]="form" (submit)="onSubmit()">
     <h1 class="h3 mb-3 fw-normal">Please register</h1>
 
-    <div class="form-floating">
-      <label>Email address</label>
-      <input formControlName="email" type="email" class="form-control" placeholder="name@example.com">
+    <div class="p-field form-floating">
+      <label for="email">Email address</label>
+      <input id="email" formControlName="email" type="email" pInputText placeholder="name@example.com">
     </div>
 
-    <div class="form-floating">
+    <div class="p-field form-floating">
       <label>Password</label>
-      <input formControlName="password" type="password" class="form-control" placeholder="Password">
+      <input formControlName="password" type="password" pInputText placeholder="Password">
     </div>
 
-    <div class="form-floating">
+    <div class="p-field form-floating">
       <label>First Name</label>
-      <input formControlName="first_name" class="form-control" placeholder="First Name">
+      <input formControlName="first_name" pInputText placeholder="First Name">
     </div>
 
-    <div class="form-floating">
-      <label>LastName</label>
-      <input formControlName="last_name" class="form-control" placeholder="Last Name">
+    <div class="p-field form-floating">
+      <label>Last Name</label>
+      <input formControlName="last_name" pInputText placeholder="Last Name">
     </div>
 
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
+    <button class="p-button p-component w-100 btn btn-lg btn-primary" type="submit">Submit</button>
   </form>
 </main>

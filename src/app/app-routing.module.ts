@@ -10,20 +10,19 @@ import {RegisterComponent} from "./register/register.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  {path: 'home', component: HomeViewComponent},
-  {path: 'search/:id', component: ProductDetailsViewComponent},
-  {path: 'checkout/cart', component: CartViewComponent},
-  {path: 'profile/transactions', component: TransactionViewComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'search', component: SearchProductsViewComponent},
-  {path: 'user/cart', component: CartViewComponent},
-  { path: 'register', component: RegisterComponent },
+  {path: 'home', component: HomeViewComponent, title:'home'},
+  {path: 'product/:id', component: ProductDetailsViewComponent},
+  {path: 'profile/transactions', component: TransactionViewComponent,title:'My Transactions'},
+  {path: 'login', component: LoginComponent, title:'Login'},
+  {path: 'search/:category', component: SearchProductsViewComponent},
+  {path: 'user/cart', component: CartViewComponent, title:'My Cart'},
+  { path: 'register', component: RegisterComponent, title:'Register'},
 ];
 
 @NgModule({
   declarations: [],
   imports: [
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes,{ onSameUrlNavigation: 'reload' })
   ],
   exports:[RouterModule]
 })

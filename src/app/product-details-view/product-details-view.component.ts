@@ -16,7 +16,9 @@ export class ProductDetailsViewComponent implements OnInit{
   ngOnInit(): void {
     if(this.route.snapshot.paramMap.get('id') !== null)
       this.productService.getProductById((<string>this.route.snapshot.paramMap.get('id')))
-          .subscribe(value => this.selectedProduct=value)
+          .subscribe(value => {
+            this.selectedProduct=value
+          })
   }
 
 }

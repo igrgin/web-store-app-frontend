@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {catchError, Observable, of, tap} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {BrandDto} from "../../interface/brand/brand-dto";
+import {CategoryDto} from "../../interface/category/category-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +17,25 @@ export class BrandService {
 
   getBrandsByParentId(categoryId: number): Observable<BrandDto[]> {
 
-    return this.http.get<BrandDto[]>(`${this.brandUrl}/public/find/subcategory/${categoryId}`,this.httpOptions)
+    return this.http.get<BrandDto[]>(`${this.brandUrl}/public/find/subcategory/id/${categoryId}`,this.httpOptions)
       .pipe(
         tap(_ => {
           console.log(`fetched brands`)
         }),
         catchError(this.handleError<BrandDto[]>('getBrandsByParentId', []))
       );
+  }
+
+  getBrandsByCategoryName(categoryName: string): Observable<BrandDto[]> {
+
+    return this.http.get<BrandDto[]>(`${this.brandUrl}/public/find/category/name/${categoryName}`,this.httpOptions)
+      .pipe(
+        tap(_ => {
+          console.log(`fetched brands`)
+        }),
+        catchError(this.handleError<BrandDto[]>('getBrandsBySubcategoryName', []))
+      );
+
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
