@@ -32,6 +32,8 @@ import {HomeViewComponent} from './home-view/home-view.component';
 import {authenticationInterceptorProviders} from "./interceptor/authentication.interceptor";
 import {RegisterComponent} from './register/register.component';
 import {MatIconModule} from "@angular/material/icon";
+import {InputSwitchModule} from "primeng/inputswitch";
+import {VirtualScrollerModule} from "primeng/virtualscroller";
 
 @NgModule({
   declarations: [
@@ -46,31 +48,33 @@ import {MatIconModule} from "@angular/material/icon";
     HomeViewComponent,
     RegisterComponent
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    InputTextModule,
-    ButtonModule,
-    FormsModule,
-    RippleModule,
-    PaginatorModule,
-    TabMenuModule,
-    MegaMenuModule,
-    MenubarModule,
-    DataViewModule,
-    TagModule,
-    NgOptimizedImage,
-    SidebarModule,
-    MultiSelectModule,
-    DividerModule,
-    DropdownModule,
-    BrowserAnimationsModule,
-    NoopAnimationsModule,
-    SliderModule,
-    MatIconModule,
-    ReactiveFormsModule
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        InputTextModule,
+        ButtonModule,
+        FormsModule,
+        RippleModule,
+        PaginatorModule,
+        TabMenuModule,
+        MegaMenuModule,
+        MenubarModule,
+        DataViewModule,
+        TagModule,
+        NgOptimizedImage,
+        SidebarModule,
+        MultiSelectModule,
+        DividerModule,
+        DropdownModule,
+        BrowserAnimationsModule,
+        NoopAnimationsModule,
+        SliderModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        InputSwitchModule,
+      VirtualScrollerModule
+    ],
   providers: [authenticationInterceptorProviders],
   bootstrap: [AppComponent]
 })

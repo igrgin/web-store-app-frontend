@@ -3,7 +3,7 @@ import {MenuItem} from "primeng/api";
 import {AuthService} from "../service/auth/auth.service";
 import {StorageService} from "../service/storage/storage.service";
 import {CategoryService} from "../service/category/category.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-menu-view',
@@ -16,7 +16,7 @@ export class MenuViewComponent implements OnInit {
   categories: MenuItem[] = []
 
   constructor(private storageService: StorageService, private authService: AuthService, private router: Router,
-              private categoryService: CategoryService, private route:ActivatedRoute) {
+              private categoryService: CategoryService) {
   }
 
   ngOnInit() {
@@ -58,7 +58,6 @@ export class MenuViewComponent implements OnInit {
     this.categories = []
     this.categoryService.getTopLevelCategories().subscribe(res => {
       res.forEach(cat => {
-        console.log(cat.name)
         this.categories.push({
           label: `${cat.name}`,
           routerLink: `/search/${cat.name}`,

@@ -1,11 +1,12 @@
 
 export interface Product {
-  id?:String;
-  brand:String;
-  name:String;
-  price:Number
-  category:String;
-  stock:Number;
-  description:String;
-  image_url:String;
+  id?:string;
+  brand:string;
+  name:string;
+  price:number
+  category:string;
+  subcategory:string;
+  stock:number;
+  description:string;
+  image_url:string;
 }

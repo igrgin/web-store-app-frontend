@@ -1,1 +1,50 @@
-<p>cart-view works!</p>
+<div class="cart-page">
+    <div class="cart-items">
+    <div class="p-col-12">
+      <h2 class="p-text-center p-mt-3 p-mb-4">My Cart</h2>
+    </div>
+    <div class="p-col-9">
+      <div class="cart-items">
+        <div class="cart-page">
+          <div class="cart-items">
+            <p-virtualScroller [value]="cartItems" scrollHeight="{{100*cartItems.length}}px" [itemSize]="100">
+              <ng-template let-product pTemplate="listItem">
+                <div class="col-12">
+                  <div class="flex flex-column xl-flex-row xl-align-items-start p-4 gap-4">
+                    <div
+                      class="flex flex-column sm-flex-row justify-content-between align-items-center xl-align-items-start flex-1 gap-4">
+                      <div class="flex flex-column align-items-center sm-align-items-start gap-3">
+                        <a [routerLink]="['/product', product.id]">
+                          <div class="text-2xl font-bold text-900">{{ product.name }}</div>
+                        </a>
+                        <div class="flex align-items-center gap-3">
+              <span class="flex align-items-center gap-2">
+                <i class="pi pi-tag"></i>
+                <span class="font-semibold">{{ product.subcategory }}</span>
+              </span>
+                        </div>
+                      </div>
+                      <div class="flex sm-flex-column align-items-center sm-align-items-end gap-3 sm-gap-2">
+                        <label>Quantity: </label>
+                        <p-inputNumber  [showButtons]="true" inputId="minmax-buttons" [min]="1" [max]="product.stock" placeholder=1 [(ngModel)]="product.quantity"
+                                        (ngModelChange)="calculateTotalPrice();"></p-inputNumber><br>
+                        <span class="text-2xl font-semibold">price: {{ product.price + '€' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </p-virtualScroller>
+          </div>
+        </div>
+        <div class="sidebar">
+          <div class="total-price">
+            <h3>Total Price</h3>
+            <h2>{{ sum  + '€' }}</h2>
+          </div>
+          <button class="checkout-button" (click)="checkout()">Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

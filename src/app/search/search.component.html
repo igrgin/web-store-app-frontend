@@ -1,26 +1,60 @@
 <div class="flex-container">
   <div class="flex-item">
     <div class="p-inputgroup">
-      <input type="text" pInputText placeholder="Search" [defaultValue]="" [(ngModel)]="searchEventOutput.name">
-      <button pButton pRipple class="pi" (click)="onSearchEvent()"><i class="pi pi-search"></i></button>
-    </div>
-    <div>
-      <p-dropdown *ngIf="searchEventOutput && sizeValues" [options]="sizeValues" [(ngModel)]="searchEventOutput.size" placeholder="size"></p-dropdown>
+      <input type="text" class="p-inputtext" placeholder="Search" [(ngModel)]="name">
+      <button pButton pRipple class="pi" (click)="this.newSearch=true;search()"><i class="pi pi-search"></i></button>
     </div>
   </div>
   <p-divider></p-divider>
   <div class="card flex">
-    <span>Price Range: {{searchEventOutput.priceRange ? searchEventOutput.priceRange[0] : 0}} - {{searchEventOutput.priceRange ? searchEventOutput.priceRange[1] : 1000}}</span><br><br>
-    <p-slider [(ngModel)]="searchEventOutput.priceRange" [range]="true" [min]="minMaxRangeValues[0]" [max]="minMaxRangeValues[1]" aria-label="label_number"></p-slider>
+    <span>Price Range: {{selectedPriceRange[0]}} - {{selectedPriceRange[1]}}</span><br><br>
+    <p-slider [(ngModel)]="selectedPriceRange" [range]="true" [min]="priceRange[0]" [max]="priceRange[1]"
+              aria-label="label_number"></p-slider>
   </div>
   <p-divider></p-divider>
   <div class="flex-item">
     <div>
-      <p-dropdown *ngIf="searchEventOutput && allSubcategories" [options]="allSubcategories" [(ngModel)]="searchEventOutput.subcategory" placeholder="Choose a Category"></p-dropdown>
+      <p-dropdown [options]="subcategories" [(ngModel)]="subcategory" placeholder="Choose a Category"></p-dropdown>
     </div>
     <div>
-      <p-multiSelect *ngIf="searchEventOutput && allBrands" [options]="allBrands" [(ngModel)]="searchEventOutput.brands" placeholder="Choose Brands"></p-multiSelect>
+      <p-multiSelect [options]="brands" [(ngModel)]="selectedBrands" placeholder="Choose Brands"></p-multiSelect>
     </div>
   </div>
 </div>
 <p-divider></p-divider>
+<p-dataView [value]="virtualProducts"
+            [first]="first"
+            [totalRecords]="totalRecords"
+            [rows]="selectedSize"
+            [rowsPerPageOptions]="sizeOptions"
+            [paginator]="true"
+            [pageLinks]="5"
+            [lazy]="true"
+            (onLazyLoad)="loadProducts($event);loading=false">
+  <ng-template let-product pTemplate="listItem">
+    <div class="col-12">
+      <div class="flex flex-column xl-flex-row xl-align-items-start p-4 gap-4">
+        <div
+          class="flex flex-column sm-flex-row justify-content-between align-items-center xl-align-items-start flex-1 gap-4">
+          <div class="flex flex-column align-items-center sm-align-items-start gap-3">
+            <a [routerLink]="['/product', product.id]">
+              <div class="text-2xl font-bold text-900">{{ product.name }}</div>
+            </a>
+            <div class="flex align-items-center gap-3">
+              <span class="flex align-items-center gap-2">
+                <i class="pi pi-tag"></i>
+                <span class="font-semibold">{{ product.subcategory }}</span>
+              </span>
+            </div>
+          </div>
+          <div class="flex sm-flex-column align-items-center sm-align-items-end gap-3 sm-gap-2">
+            <span class="text-2xl font-semibold">{{ product.price + '€' }}</span>
+            <button class="p-button p-button-rounded" [disabled]="product.stock === 0" (click)="addToCart(product.id)">
+              <i class="pi pi-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-dataView>

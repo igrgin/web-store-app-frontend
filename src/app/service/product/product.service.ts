@@ -16,21 +16,20 @@ export class ProductService {
   constructor(private http:HttpClient) { }
 
   searchProducts(searchQuery:Search): Observable<PageableProducts> {
-    console.log(searchQuery.page)
     let queryParams = new HttpParams();
     if(searchQuery){
-      if(searchQuery.name && searchQuery.name.length > 0) queryParams = queryParams.append("name",searchQuery.name)
-      if(searchQuery.category && searchQuery.category.length > 0) queryParams = queryParams.append("category",searchQuery.category)
-      if(searchQuery.subcategory && searchQuery.subcategory.length > 0) queryParams = queryParams.append("subcategory",searchQuery.subcategory)
-      if(searchQuery.brands && searchQuery.brands.length > 0) queryParams = queryParams.append("brands",searchQuery.brands.toString())
-      if(searchQuery.priceRange && searchQuery.priceRange.length == 2) {
+      if(searchQuery.name != null && searchQuery.name.length > 0) queryParams = queryParams.append("name",searchQuery.name)
+      if(searchQuery.category != null && searchQuery.category.length > 0) queryParams = queryParams.append("category",searchQuery.category)
+      if(searchQuery.subcategory != null && searchQuery.subcategory.length > 0) queryParams = queryParams.append("subcategory",searchQuery.subcategory)
+      if(searchQuery.brands != null && searchQuery.brands.length > 0) queryParams = queryParams.append("brands",searchQuery.brands.toString())
+      if(searchQuery.priceRange != null && searchQuery.priceRange.length == 2) {
         queryParams = queryParams.append("pMin",searchQuery.priceRange[0])
         queryParams = queryParams.append("pMax",searchQuery.priceRange[1])
       }
-      if(searchQuery.page && searchQuery.page >= 0) queryParams = queryParams.append("page",encodeURIComponent(searchQuery.page))
-      if(searchQuery.size && searchQuery.size > 0) queryParams = queryParams.append("size",encodeURIComponent(searchQuery.size))
-    }
 
+      if(searchQuery.page != null && searchQuery.page >= 0) queryParams = queryParams.append("page",searchQuery.page)
+      if(searchQuery.size != null && searchQuery.size > 0) queryParams = queryParams.append("size",searchQuery.size)
+    }
 
     console.log(queryParams.toString())
 
@@ -58,7 +57,7 @@ export class ProductService {
 
   getProductById(id:string): Observable<Product> {
 
-    return this.http.get<Product>(`${this.productUrl}/private/find/id/${id}`)
+    return this.http.get<Product>(`${this.productUrl}/public/find/id/${id}`)
       .pipe(
         tap(_ => {
           console.log(`fetched products`)

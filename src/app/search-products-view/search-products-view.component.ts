@@ -31,7 +31,7 @@ export class SearchProductsViewComponent implements OnInit {
   onSearchEventTriggered() {
     this.route.paramMap
       .pipe(
-        switchMap((params: ParamMap) => {
+        switchMap((_: ParamMap) => {
           const nameParam = this.route.snapshot.paramMap.get('name');
           const categoryParam = this.route.snapshot.paramMap.get('category');
           const subcategoryParam = this.route.snapshot.paramMap.get('subcategory');
@@ -39,7 +39,7 @@ export class SearchProductsViewComponent implements OnInit {
           const priceRangeParam = this.route.snapshot.paramMap.get('priceRange');
           const pageParam = this.route.snapshot.paramMap.get('page');
           const sizeParam = this.route.snapshot.paramMap.get('size');
-          console.log(pageParam)
+          console.log("HERE")
           if (
             pageParam !== null && sizeParam != null && categoryParam !== null
           ) {
