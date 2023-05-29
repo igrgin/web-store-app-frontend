@@ -66,9 +66,11 @@ export class ProductService {
       );
   }
 
-  getProductsByCategory(category:String): Observable<PageableProducts> {
+  getProductsByCategory(category:string, size:number): Observable<PageableProducts> {
+    let queryParams = new HttpParams()
+    queryParams = queryParams.append("size",size)
 
-    return this.http.get<PageableProducts>(`${this.productUrl}/private/find/category/${category}`)
+    return this.http.get<PageableProducts>(`${this.productUrl}/public/find/category/${category}`,{params:queryParams})
       .pipe(
         tap(_ => {
           console.log(`fetched products`)

@@ -6,7 +6,7 @@ import {TransactionViewComponent} from "./transaction-view/transaction-view.comp
 import {LoginComponent} from "./login/login.component";
 import {HomeViewComponent} from "./home-view/home-view.component";
 import {RegisterComponent} from "./register/register.component";
-import {SearchComponent} from "./search/search.component";
+import {SearchProductsViewComponent} from "./search-products-view/search-products-view.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -14,7 +14,7 @@ const routes: Routes = [
   {path: 'product/:id', component: ProductDetailsViewComponent},
   {path: 'profile/transactions', component: TransactionViewComponent,title:'My Transactions'},
   {path: 'login', component: LoginComponent, title:'Login'},
-  {path: 'search/:category', component: SearchComponent},
+  {path: 'search/:category', component: SearchProductsViewComponent},
   {path: 'user/cart', component: CartViewComponent, title:'My Cart'},
   {path: 'register', component: RegisterComponent, title:'Register'},
 ];

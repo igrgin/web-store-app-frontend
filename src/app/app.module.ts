@@ -7,7 +7,6 @@ import {TransactionViewComponent} from './transaction-view/transaction-view.comp
 import {SearchProductsViewComponent} from './search-products-view/search-products-view.component';
 import {HttpClientModule} from "@angular/common/http";
 import {AppRoutingModule} from "./app-routing.module";
-import {SearchComponent} from './search/search.component';
 import {InputTextModule} from "primeng/inputtext";
 import {ButtonModule} from "primeng/button";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -34,6 +33,7 @@ import {RegisterComponent} from './register/register.component';
 import {MatIconModule} from "@angular/material/icon";
 import {InputSwitchModule} from "primeng/inputswitch";
 import {VirtualScrollerModule} from "primeng/virtualscroller";
+import {CarouselModule} from "primeng/carousel";
 
 @NgModule({
   declarations: [
@@ -41,40 +41,40 @@ import {VirtualScrollerModule} from "primeng/virtualscroller";
     CartViewComponent,
     TransactionViewComponent,
     SearchProductsViewComponent,
-    SearchComponent,
     LoginComponent,
     ProductDetailsViewComponent,
     MenuViewComponent,
     HomeViewComponent,
     RegisterComponent
   ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        AppRoutingModule,
-        InputTextModule,
-        ButtonModule,
-        FormsModule,
-        RippleModule,
-        PaginatorModule,
-        TabMenuModule,
-        MegaMenuModule,
-        MenubarModule,
-        DataViewModule,
-        TagModule,
-        NgOptimizedImage,
-        SidebarModule,
-        MultiSelectModule,
-        DividerModule,
-        DropdownModule,
-        BrowserAnimationsModule,
-        NoopAnimationsModule,
-        SliderModule,
-        MatIconModule,
-        ReactiveFormsModule,
-        InputSwitchModule,
-      VirtualScrollerModule
-    ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    InputTextModule,
+    ButtonModule,
+    FormsModule,
+    RippleModule,
+    PaginatorModule,
+    TabMenuModule,
+    MegaMenuModule,
+    MenubarModule,
+    DataViewModule,
+    TagModule,
+    NgOptimizedImage,
+    SidebarModule,
+    MultiSelectModule,
+    DividerModule,
+    DropdownModule,
+    BrowserAnimationsModule,
+    NoopAnimationsModule,
+    SliderModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    InputSwitchModule,
+    VirtualScrollerModule,
+    CarouselModule
+  ],
   providers: [authenticationInterceptorProviders],
   bootstrap: [AppComponent]
 })

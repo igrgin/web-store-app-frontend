@@ -3,6 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Product} from "../interface/product/product";
 import {ProductService} from "../service/product/product.service";
 import {Title} from "@angular/platform-browser";
+import {StorageService} from "../service/storage/storage.service";
 
 @Component({
   selector: 'app-product-details-view',
@@ -12,7 +13,8 @@ import {Title} from "@angular/platform-browser";
 export class ProductDetailsViewComponent implements OnInit{
 
   selectedProduct?:Product;
-  constructor(private route:ActivatedRoute, private productService:ProductService, private titleService:Title) {
+  constructor(private route:ActivatedRoute, private productService:ProductService, private titleService:Title,
+              private storageService:StorageService) {
   }
   ngOnInit(): void {
     if(this.route.snapshot.paramMap.get('id') !== null)
@@ -21,6 +23,11 @@ export class ProductDetailsViewComponent implements OnInit{
             this.selectedProduct=value
             this.titleService.setTitle(this.selectedProduct.name)
           })
+  }
+
+  addToCart(productId: string) {
+    this.storageService.addToCart(productId)
+    console.log('Cart:', this.storageService.getCart())
   }
 
 }

@@ -8,5 +8,5 @@
         <p><b>Stock:</b> {{ selectedProduct.stock }}</p>
         <p><b>Description:</b> {{ selectedProduct.description }}</p>
     </div>
-    <button pButton type="button" label="Buy" class="p-button-success"></button>
+    <button pButton type="button" label="Buy" class="p-button-success" (click)="selectedProduct.id ? addToCart(selectedProduct.id): null"></button>
 </div>

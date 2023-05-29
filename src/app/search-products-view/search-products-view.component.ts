@@ -1,9 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {PageableProducts} from "../interface/product/pagable-products";
 import {ProductService} from "../service/product/product.service";
 import {Search} from "../interface/search/search";
-import {ActivatedRoute, ParamMap} from "@angular/router";
-import {Observable, switchMap} from "rxjs";
+import {ActivatedRoute} from "@angular/router";
+import {Product} from "../interface/product/product";
+import {CategoryService} from "../service/category/category.service";
+import {BrandService} from "../service/brand/brand.service";
+import {Title} from "@angular/platform-browser";
+import {StorageService} from "../service/storage/storage.service";
+import {CategoryDto} from "../interface/category/category-dto";
+import {BrandDto} from "../interface/brand/brand-dto";
 
 @Component({
   selector: 'app-search-products-view',
@@ -11,69 +16,187 @@ import {Observable, switchMap} from "rxjs";
   styleUrls: ['./search-products-view.component.css']
 })
 export class SearchProductsViewComponent implements OnInit {
-  searchResults: PageableProducts = {
-    products: [],
-    total_pages: 0,
-    total_products: 0
-  };
-  searchParams: Search = { size:40} as Search
+  virtualProducts: Product[] = [];
+  selectedSize = 40;
+  totalRecords = 0; // Total number of products
+  selectedPage = 0; // Current page number
+  name?: string; // Name search parameter, adjust the type as per your requirement
+  category: string = (<string>this.route.snapshot.paramMap.get('category')); // Category search parameter, adjust the type as per your requirement
+  subcategory?: string; // Subcategory search parameter, adjust the type as per your requirement
+  selectedBrands: string[] = []; // Brands search parameter, initialized as an empty array
+  priceRange: number[] = [0, 4000]; // Price range search parameter, adjust the type as per your requirement
+  subcategories: string[] = [];
+  brands: string[] = [];
+  sizeOptions: number[] = [5, 20, 40, 60, 80, 100, 200, 500];
+  selectedPriceRange: number[] = [20, 1000];
+  first = 0;
+  loading: boolean = false;
+  pagesItems?: any
 
-  constructor(private productService: ProductService, private route: ActivatedRoute) {
-
+  constructor(
+    private categoryService: CategoryService,
+    private brandService: BrandService,
+    private productService: ProductService,
+    private route: ActivatedRoute,
+    private titleService: Title,
+    private storageService: StorageService
+  ) {
   }
 
   ngOnInit(): void {
-
-
-  }
-
-
-  onSearchEventTriggered() {
-    this.route.paramMap
-      .pipe(
-        switchMap((_: ParamMap) => {
-          const nameParam = this.route.snapshot.paramMap.get('name');
-          const categoryParam = this.route.snapshot.paramMap.get('category');
-          const subcategoryParam = this.route.snapshot.paramMap.get('subcategory');
-          const brandsParam = this.route.snapshot.paramMap.get('brands');
-          const priceRangeParam = this.route.snapshot.paramMap.get('priceRange');
-          const pageParam = this.route.snapshot.paramMap.get('page');
-          const sizeParam = this.route.snapshot.paramMap.get('size');
-          console.log("HERE")
-          if (
-            pageParam !== null && sizeParam != null && categoryParam !== null
-          ) {
-            this.searchParams = {
-              name: nameParam?.toString(),
-              category: categoryParam,
-              subcategory: subcategoryParam?.toString(),
-              brands: brandsParam?.split(","),
-              priceRange: priceRangeParam?.split(",").map(Number),
-              page: parseInt(pageParam),
-              size: parseInt(sizeParam)
-            };
-            this.productService.searchProducts(this.searchParams).subscribe(value => {
-              console.log(value)
-            });
-          }
-          return new Observable<any>()
-        })).subscribe()
-  }
-
-  onPageChange(event: any) {
-    if (this.searchParams) {
-      console.log(event.rows)
-      const newPageQuery: Search = {
-        name: this.searchParams.name,
-        category: this.searchParams.category,
-        subcategory: this.searchParams.subcategory,
-        brands: this.searchParams.brands,
-        page: event.target.value - 1,
-        size: event.rows,
-        priceRange: this.searchParams.priceRange
+    console.log("oninit")
+    this.route.params.subscribe(params => {
+      this.loading=true
+      this.category = params['category']
+      this.updateValues();
+      if (this.category)
+        this.titleService.setTitle(this.category);
+      const initialSearchParams: Search = {
+        size: this.selectedSize,
+        page: this.selectedPage,
+        category: this.category,
+        subcategory: this.subcategory,
+        brands: this.selectedBrands,
+        priceRange: this.selectedPriceRange,
+        name: this.name
       }
-      this.onSearchEventTriggered()
+
+      this.search(initialSearchParams)
+      setTimeout(() => {
+        console.log('pagesItems:', this.pagesItems[this.selectedPage]);
+        this.virtualProducts = [...this.pagesItems[this.selectedPage]]
+        console.log('virtualProducts:', this.virtualProducts);
+        console.log(`virtualProducts length: ${this.virtualProducts.length}`);
+        this.loading=false
+      }, 1000);
+    });
+
+  }
+
+  search(searchParams: Search): void {
+    console.log("search")
+
+    this.productService
+      .searchProducts(searchParams)
+      .subscribe((value) => {
+        this.pagesItems['searchParams'] = {
+          category: searchParams.category,
+          subcategory: searchParams.subcategory,
+          brands: searchParams.brands,
+          priceRange: searchParams.priceRange,
+          name: searchParams.name
+        }
+        this.pagesItems['size'] = this.selectedSize
+        this.pagesItems['page'] = this.selectedPage
+        console.log('pagable products: ', value.products)
+        this.pagesItems[this.selectedPage] = [...value.products]
+        this.totalRecords = value.total_products;
+        console.log(this.totalRecords)
+      });
+
+    console.log(`name: ${this.name}`)
+    console.log(`category: ${this.category}`)
+    console.log(`subcategory: ${this.subcategory}`)
+    console.log(`brands: ${this.selectedBrands}`)
+    console.log(`Price range: ${this.selectedPriceRange[0]} - ${this.selectedPriceRange[1]}`)
+    console.log(`Size: ${this.selectedSize}`)
+    console.log(`first: ${this.first}`)
+    console.log(`Page: ${this.selectedPage}`)
+  }
+
+
+  loadProducts(event: any, isButtonClicked: boolean) {
+    this.loading = true
+    console.log("loadProducts")
+    this.first = event.first;
+    this.selectedSize = event.rows;
+    this.selectedPage = Math.floor(this.first / this.selectedSize);
+    console.log(`Size: ${this.selectedSize}`);
+    console.log(`first: ${this.first}`);
+    console.log(`Page: ${this.selectedPage + 1}`);
+    let searchParams: Search = {
+      size: this.selectedSize,
+      page: this.selectedPage,
+      category: this.category,
+      subcategory: this.subcategory,
+      brands: this.selectedBrands,
+      priceRange: this.selectedPriceRange,
+      name: this.name
     }
 
+    if (!this.pagesItems || isButtonClicked || (this.pagesItems && !this.isPageChange(searchParams))) {
+      this.pagesItems = {}
+    }
+
+    if (this.pagesItems[this.selectedPage] == undefined) {
+      if (this.pagesItems && this.isPageChange(searchParams)) searchParams = {
+        size: searchParams.size,
+        page: searchParams.page,
+        priceRange: this.pagesItems['searchParams'].priceRange,
+        brands: this.pagesItems['searchParams'].brands,
+        subcategory: this.pagesItems['searchParams'].subcategory,
+        name: this.pagesItems['searchParams'].name,
+        category: this.pagesItems['searchParams'].category
+      }
+
+      this.search(searchParams);
+      setTimeout(() => {
+        console.log('pagesItems:', this.pagesItems[this.selectedPage]);
+        this.virtualProducts = [...this.pagesItems[this.selectedPage]]
+        event.forceUpdate = true;
+        this.loading = false
+      }, 1000);
+    } else {
+
+      this.virtualProducts = [...this.pagesItems[this.selectedPage]]
+      event.forceUpdate = true;
+      this.loading = false
+    }
+
+
+  }
+
+  isPageChange(searchParams: Search): boolean {
+
+    return (searchParams.page != this.pagesItems['page']) &&
+      searchParams.name == this.pagesItems['searchParams']?.name &&
+      searchParams.size == this.pagesItems['size'] &&
+      searchParams.category == this.pagesItems['searchParams'].category &&
+      searchParams.subcategory == this.pagesItems['searchParams']?.subcategory &&
+      searchParams.brands == this.pagesItems['searchParams']?.brands &&
+      searchParams.priceRange == this.pagesItems['searchParams'].priceRange
+  }
+
+  private fetchCategories(category: string) {
+    console.log("fetch categories")
+    this.categoryService
+      .getSubcategoriesByCategoryName(category)
+      .subscribe((categories: CategoryDto[]) => {
+        this.subcategories = categories.map((category: CategoryDto) => category.name);
+      });
+  }
+
+  private fetchBrands(category: string) {
+    console.log("fetch brands")
+    this.brandService.getBrandsByCategoryName(category).subscribe((brands: BrandDto[]) => {
+      this.brands = brands.map((brand: BrandDto) => brand.name);
+    });
+  }
+
+  updateValues(): void {
+    if (this.category) {
+      this.fetchCategories(this.category);
+      this.fetchBrands(this.category);
+    }
+  }
+
+  addToCart(productId: string) {
+    this.storageService.addToCart(productId)
+    console.log('Cart:', this.storageService.getCart())
+  }
+
+  OnSearchButtonClick() {
+    this.first = 0
+    this.loadProducts({first: this.first, rows: this.selectedSize, forceUpdate: true}, true);
   }
 }
