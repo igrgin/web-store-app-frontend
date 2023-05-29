@@ -7,7 +7,7 @@
       <div class="cart-items">
         <div class="cart-page">
           <div class="cart-items">
-            <p-virtualScroller [value]="cartItems" scrollHeight="{{100*cartItems.length}}px" [itemSize]="100">
+            <p-virtualScroller [value]="cartItems" scrollHeight="{{150*cartItems.length}}px" [itemSize]="150">
               <ng-template let-product pTemplate="listItem">
                 <div class="col-12">
                   <div class="flex flex-column xl-flex-row xl-align-items-start p-4 gap-4">
@@ -32,6 +32,7 @@
                       </div>
                     </div>
                   </div>
+                  <p-button label="Remove" (click)="removeFromCart(product.id)" styleClass="p-button-danger"></p-button>
                 </div>
               </ng-template>
             </p-virtualScroller>

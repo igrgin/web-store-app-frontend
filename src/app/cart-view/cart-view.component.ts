@@ -18,7 +18,7 @@ export class CartViewComponent implements OnInit{
   ngOnInit(): void {
     if(this.storageService.doesCartExist())
     {
-      this.cartItems = JSON.parse((<string>this.storageService.getCart()))
+      this.cartItems = this.storageService.getCart()
       this.calculateTotalPrice()
     }
   }
@@ -29,13 +29,18 @@ export class CartViewComponent implements OnInit{
   }
 
   calculateTotalPrice() {
-    this.sum = this.cartItems.map(value => value.price * value.quantity)
-      .reduce((previousValue, currentValue) => previousValue+currentValue,0);
+    this.sum = Number(this.cartItems.map(value => value.price * value.quantity)
+      .reduce((previousValue, currentValue) => previousValue+currentValue,0).toFixed(2));
     this.storageService.updateCart(this.cartItems)
   }
 
   checkout() {
     console.log("checkout completed!")
     this.storageService.deleteCart()
+  }
+
+  removeFromCart(id: string) {
+    this.storageService.removeFromCart(id)
+    this.cartItems=this.storageService.getCart()
   }
 }

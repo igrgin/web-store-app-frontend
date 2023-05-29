@@ -1,5 +1,5 @@
 <div>
-  <div *ngFor="let category of Object.keys(categoryValues)">
+  <div *ngFor="let category of orderedCategories">
     <h1>{{category}}</h1>
     <p-carousel [value]="categoryValues[category]" [numVisible]="5" [numScroll]="size/5" [circular]="true">
       <ng-template let-product pTemplate="item">
@@ -9,12 +9,7 @@
           </div>
           <div>
             <a [routerLink]="['/product', product.id]"><h4 class="mb-1">{{ product.name }}</h4></a>
-            <h6 class="mt-0 mb-3">{{ product.price + 'eur'}}</h6>
-
-            <div class="car-buttons mt-5">
-              <p-button type="button" styleClass="p-button p-button-rounded mr-2" icon="pi pi-search"></p-button>
-              <p-button type="button" styleClass="p-button-success p-button-rounded mr-2" icon="pi pi-star-fill"></p-button>
-            </div>
+            <h6 class="mt-0 mb-3">{{ product.price + '€'}}</h6>
           </div>
         </div>
       </ng-template>

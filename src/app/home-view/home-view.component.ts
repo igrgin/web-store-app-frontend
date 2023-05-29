@@ -10,21 +10,32 @@ import {ProductService} from "../service/product/product.service";
 export class HomeViewComponent implements OnInit {
   size: number = 25
   categoryValues: any = {}
+  orderedCategories:string[]=[]
 
   constructor(private categoryService: CategoryService, private productService: ProductService) {
   }
 
   ngOnInit(): void {
-    this.categoryService.getTopLevelCategories().subscribe(categories =>
+    this.categoryService.getTopLevelCategories().subscribe(categories => {
       categories.forEach(category => this.productService.getProductsByCategory(category.name, this.size)
         .subscribe(pagableProducts => {
           console.log('name: ',category.name)
           console.log('products: ',pagableProducts.products)
           this.categoryValues[category.name] = [...pagableProducts.products]
           console.log('map: ',this.categoryValues[category.name])
-        })))
-  }
+        }))
+      this.orderedCategories=categories.map(value => value.name).sort((a, b) => {
+        if (a>b)
+        {
+          return 1
+        }
+        if(a<b)
+        {return -1}
 
+        return 0
+      })
+    })
+  }
 
   protected readonly Object = Object;
 }
