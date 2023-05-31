@@ -137,7 +137,8 @@ export class StorageService {
   }
 
   public deleteCart() {
-    this.cookieService.delete(CART)
+    console.log("deleted CART")
+    this.cookieService.delete(CART,'/')
   }
 
   public doesCartExist() {

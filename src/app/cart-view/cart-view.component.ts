@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {StorageService} from "../service/storage/storage.service";
+import {TransactionService} from "../service/transaction/transaction.service";
 
 
 @Component({
@@ -13,7 +14,7 @@ export class CartViewComponent implements OnInit{
   first = 0;
   sum: number = 0;
 
-  constructor(private storageService:StorageService) {}
+  constructor(private storageService:StorageService, private transactionService:TransactionService) {}
 
   ngOnInit(): void {
     if(this.storageService.doesCartExist())
@@ -23,11 +24,6 @@ export class CartViewComponent implements OnInit{
     }
   }
 
-  loadPage(event: any) {
-    this.first=event.first
-    this.selectedSize= event.selectedSize
-  }
-
   calculateTotalPrice() {
     this.sum = Number(this.cartItems.map(value => value.price * value.quantity)
       .reduce((previousValue, currentValue) => previousValue+currentValue,0).toFixed(2));
@@ -35,8 +31,14 @@ export class CartViewComponent implements OnInit{
   }
 
   checkout() {
-    console.log("checkout completed!")
-    this.storageService.deleteCart()
+    this.transactionService.saveTransaction({products:this.storageService.getCart().map(value => {
+        return {id:value.id,quantity:value.quantity, name:value.name, price:Number(value.price.toFixed(2))*value.quantity}
+      }), created_at:new Date().toISOString()}).subscribe(
+      _ => {
+        console.log("saved")
+        this.storageService.deleteCart()
+      }
+    )
   }
 
   removeFromCart(id: string) {

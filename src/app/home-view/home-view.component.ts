@@ -10,7 +10,7 @@ import {ProductService} from "../service/product/product.service";
 export class HomeViewComponent implements OnInit {
   size: number = 25
   categoryValues: any = {}
-  orderedCategories:string[]=[]
+  orderedCategories: string[] = []
 
   constructor(private categoryService: CategoryService, private productService: ProductService) {
   }
@@ -19,18 +19,17 @@ export class HomeViewComponent implements OnInit {
     this.categoryService.getTopLevelCategories().subscribe(categories => {
       categories.forEach(category => this.productService.getProductsByCategory(category.name, this.size)
         .subscribe(pagableProducts => {
-          console.log('name: ',category.name)
-          console.log('products: ',pagableProducts.products)
+          console.log('name: ', category.name)
+          console.log('products: ', pagableProducts.products)
           this.categoryValues[category.name] = [...pagableProducts.products]
-          console.log('map: ',this.categoryValues[category.name])
+          console.log('map: ', this.categoryValues[category.name])
         }))
-      this.orderedCategories=categories.map(value => value.name).sort((a, b) => {
-        if (a>b)
-        {
+      this.orderedCategories = categories.map(value => value.name).sort((a, b) => {
+        if (a > b) {
           return 1
         }
-        if(a<b)
-        {return -1}
+        if (a < b) {
+          return -1}
 
         return 0
       })

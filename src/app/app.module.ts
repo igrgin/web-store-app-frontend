@@ -34,6 +34,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {InputSwitchModule} from "primeng/inputswitch";
 import {VirtualScrollerModule} from "primeng/virtualscroller";
 import {CarouselModule} from "primeng/carousel";
+import {TableModule} from "primeng/table";
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import {CarouselModule} from "primeng/carousel";
     ReactiveFormsModule,
     InputSwitchModule,
     VirtualScrollerModule,
-    CarouselModule
+    CarouselModule,
+    TableModule
   ],
   providers: [authenticationInterceptorProviders],
   bootstrap: [AppComponent]

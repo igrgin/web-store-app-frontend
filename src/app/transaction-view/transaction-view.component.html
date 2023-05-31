@@ -1,1 +1,29 @@
-<p>transaction-view works!</p>
+<p-table [value]="virtualTransactionPage"
+         [paginator]="true"
+         [pageLinks]="5"
+         [rows]="selectedSize"
+         [rowsPerPageOptions]="sizeOptions"
+         [totalRecords]="totalTransactions"
+         [lazy]="true"
+         [loading]="loading"
+         (onLazyLoad)="loadTransactions($event)">
+
+  <!-- Column headers -->
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Date</th>
+      <th>Cart</th>
+      <th>Status</th>
+      <th>Full Price</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-transaction>
+    <!-- Individual transaction details -->
+    <tr class="transaction-item">
+      <td>{{ transaction.created_at | date : 'dd.MM.yyyy.'}}</td>
+      <td><ul class="product-dropdown"><li *ngFor="let product of transaction.products"><a [routerLink]="['/product', product.id]">{{ product.name }} x{{product.quantity}}</a><br><span>price: {{product.price + '€'}}</span></li></ul></td>
+      <td>{{ transaction.status }}</td>
+      <td>{{ transaction.price + '€' }}</td>
+    </tr>
+  </ng-template>
+</p-table>
