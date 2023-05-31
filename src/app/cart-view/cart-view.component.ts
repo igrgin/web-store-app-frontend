@@ -10,7 +10,6 @@ import {TransactionService} from "../service/transaction/transaction.service";
 })
 export class CartViewComponent implements OnInit{
   cartItems:{ name:string,stock:number,id:string,price:number,subcategory:string, quantity: number }[] = [];
-  selectedSize = 60;
   first = 0;
   sum: number = 0;
 
@@ -35,8 +34,9 @@ export class CartViewComponent implements OnInit{
         return {id:value.id,quantity:value.quantity, name:value.name, price:Number(value.price.toFixed(2))*value.quantity}
       }), created_at:new Date().toISOString()}).subscribe(
       _ => {
-        console.log("saved")
         this.storageService.deleteCart()
+        this.cartItems = []
+        this.sum = 0
       }
     )
   }

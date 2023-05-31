@@ -11,7 +11,6 @@ import {Router} from "@angular/router";
   styleUrls: ['./menu-view.component.css']
 })
 export class MenuViewComponent implements OnInit {
-  counter: number = 0
   items: MenuItem[] = [];
   categories: MenuItem[] = []
 
@@ -21,36 +20,37 @@ export class MenuViewComponent implements OnInit {
 
   ngOnInit() {
 
-    this.items = [{
-      label: 'Home',
-      icon: 'pi pi-fw pi-home',
-      routerLink: "/home"
-    }, {label: 'Cart', icon: 'pi pi-fw pi-shopping-cart', routerLink: "/user/cart"}];
+      this.items = [{
+        label: 'Home',
+        icon: 'pi pi-fw pi-home',
+        routerLink: "/home"
+      }, {label: 'Cart', icon: 'pi pi-fw pi-shopping-cart', routerLink: "/user/cart"}];
 
-    if (this.categories.length == 0) this.refreshMenubarCategories()
+      if (this.categories.length == 0) this.refreshMenubarCategories()
 
-    if (this.storageService.isLoggedIn()) {
-      this.items.push({
-        label: 'My profile',
-        icon: 'pi pi-fw pi-user',
-        items: [{label: 'My Transactions', icon: 'pi pi-fw pi-credit-card', routerLink: "profile/transactions"}, {
-          label: 'logout', icon: 'pi pi-fw pi-sign-out', command: () => {
-            this.logout();
-          }
-        },]
-      })
-    } else {
-      this.items.push(
-        {
-          label: 'register',
-          icon: 'pi pi-fw pi-user-plus',
-          routerLink: 'register'
-        }, {
-          label: 'login',
-          icon: 'pi pi-fw pi-sign-in',
-          routerLink: 'login'
-        });
-    }
+      if (this.storageService.isLoggedIn()) {
+        this.items.push({
+          label: 'My profile',
+          icon: 'pi pi-fw pi-user',
+          items: [{label: 'My Transactions', icon: 'pi pi-fw pi-credit-card', routerLink: "profile/transactions"}, {
+            label: 'logout', icon: 'pi pi-fw pi-sign-out', command: () => {
+              this.logout();
+            }
+          },]
+        })
+      } else {
+        this.items.push(
+          {
+            label: 'register',
+            icon: 'pi pi-fw pi-user-plus',
+            routerLink: 'register'
+          }, {
+            label: 'login',
+            icon: 'pi pi-fw pi-sign-in',
+            routerLink: 'login'
+          });
+      }
+
     this.authService.onLoginStatusChange.subscribe(value => this.refreshMenubarLoginState(value));
   }
 
@@ -68,11 +68,36 @@ export class MenuViewComponent implements OnInit {
   }
 
   logout(): any {
+    if(this.storageService.isLoggedIn()){
     this.authService.logout().subscribe({
       error: err => {
         console.log(err);
       }
     });
+
+    let index = this.items.indexOf({
+      label: 'My profile',
+      icon: 'pi pi-fw pi-user',
+      items: [{label: 'My Transactions', icon: 'pi pi-fw pi-credit-card', routerLink: "profile/transactions"}, {
+        label: 'logout', icon: 'pi pi-fw pi-sign-out', command: () => {
+          this.logout();
+        }
+      },]
+    });
+
+    this.items.splice(index, 1);
+    this.items.push(
+      {
+        label: 'register',
+        icon: 'pi pi-fw pi-user-plus',
+        routerLink: 'register'
+      }, {
+        label: 'login',
+        icon: 'pi pi-fw pi-sign-in',
+        routerLink: 'login'
+      });
+
+  }
   }
 
   private refreshMenubarLoginState(isLoggedIn: boolean) {
