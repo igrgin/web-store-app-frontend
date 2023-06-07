@@ -35,6 +35,16 @@ import {InputSwitchModule} from "primeng/inputswitch";
 import {VirtualScrollerModule} from "primeng/virtualscroller";
 import {CarouselModule} from "primeng/carousel";
 import {TableModule} from "primeng/table";
+import { ChartViewComponent } from './chart-view/chart-view.component';
+import {ChartModule} from "primeng/chart";
+import {ForbiddenPageComponent} from "./forbidden-page/forbidden-page.component";
+import {KeyFilterModule} from "primeng/keyfilter";
+import {ToastModule} from "primeng/toast";
+import {MessageService} from "primeng/api";
+import {JWT_OPTIONS, JwtModule} from "@auth0/angular-jwt";
+export function jwtOptionsFactory() {
+  return {};
+}
 
 @NgModule({
   declarations: [
@@ -46,7 +56,9 @@ import {TableModule} from "primeng/table";
     ProductDetailsViewComponent,
     MenuViewComponent,
     HomeViewComponent,
-    RegisterComponent
+    RegisterComponent,
+    ChartViewComponent,
+    ForbiddenPageComponent
   ],
   imports: [
     BrowserModule,
@@ -75,9 +87,18 @@ import {TableModule} from "primeng/table";
     InputSwitchModule,
     VirtualScrollerModule,
     CarouselModule,
-    TableModule
+    TableModule,
+    ChartModule,
+    KeyFilterModule,
+    ToastModule,
+    JwtModule.forRoot({
+      jwtOptionsProvider: {
+        provide: JWT_OPTIONS,
+        useFactory: jwtOptionsFactory
+      }
+    })
   ],
-  providers: [authenticationInterceptorProviders],
+  providers: [authenticationInterceptorProviders,MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

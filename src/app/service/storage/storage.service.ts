@@ -23,20 +23,22 @@ export class StorageService {
   }
 
   public saveAccessToken(accessToken: string): void {
-    sessionStorage.removeItem(ACCESS_TOKEN);
+    //sessionStorage.removeItem(ACCESS_TOKEN);
     sessionStorage.setItem(ACCESS_TOKEN, accessToken);
   }
 
   public saveRefreshToken(refreshToken: any): void {
-    this.cookieService.delete(REFRESH_TOKEN);
-    this.cookieService.set(REFRESH_TOKEN, refreshToken, {path: '/'});
+    //if(this.hasRefreshToken()) this.cookieService.delete(REFRESH_TOKEN);
+    const expirationDate = new Date()
+    expirationDate.setDate(expirationDate.getDate() + 7)
+    this.cookieService.set(REFRESH_TOKEN, refreshToken, {path: '/',expires:expirationDate,domain:'localhost',secure:true});
   }
 
   public getAccessToken(): String | null {
     return sessionStorage.getItem(ACCESS_TOKEN)
   }
 
-  public getRefreshToken(): any {
+  public getRefreshToken(): string | null {
 
     if (!this.hasRefreshToken()) {
       return null;
@@ -47,14 +49,14 @@ export class StorageService {
 
   public isLoggedIn(): boolean {
     const token = sessionStorage.getItem(ACCESS_TOKEN);
-    return token != null || this.hasRefreshToken();
+    return token != null;
   }
 
   public hasRefreshToken(): boolean {
     return this.cookieService.check(REFRESH_TOKEN);
   }
 
-  public addToCart(productId: string) {
+   public async addToCart(productId: string) {
     let isInCart: boolean = false
     if (this.cookieService.check(CART)) {
       console.log("exists")
@@ -73,7 +75,7 @@ export class StorageService {
         }
       })
       if (!isInCart) {
-        this.productService.getProductById(productId).subscribe(
+        await this.productService.getProductById(productId).then(
           product => {
             if (product.id !== undefined) {
               currentCart.push(...[{
@@ -90,7 +92,7 @@ export class StorageService {
 
     } else {
 
-      this.productService.getProductById(productId).subscribe(
+      await this.productService.getProductById(productId).then(
         product => this.cookieService.set(CART, JSON.stringify([{
           id: productId, name: product.name, price: product.price,
           quantity: 1, stock: product.stock, subcategory: product.subcategory

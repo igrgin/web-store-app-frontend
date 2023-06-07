@@ -1,5 +1,10 @@
 <div class="flex-container">
+  <div>
+    <h1>{{category}}</h1>
+    <p-divider></p-divider>
+    </div>
   <div class="flex-item">
+
     <div class="p-inputgroup">
       <input type="text" class="p-inputtext" placeholder="Search" [(ngModel)]="name">
       <button pButton pRipple class="pi" (click)="OnSearchButtonClick()"><i class="pi pi-search" ></i></button>
@@ -14,17 +19,18 @@
   <p-divider></p-divider>
   <div class="flex-item">
     <div>
-      <p-dropdown [options]="subcategories" [(ngModel)]="subcategory" placeholder="Choose a Category"></p-dropdown>
+      <p-dropdown [options]="subcategories" [(ngModel)]="subcategory" placeholder="Choose a subcategory"></p-dropdown>
     </div>
     <div>
       <p-multiSelect [options]="brands" [(ngModel)]="selectedBrands" placeholder="Choose Brands"></p-multiSelect>
     </div>
   </div>
 </div>
+<h1>Results</h1>
 <p-divider></p-divider>
 <p-dataView [value]="virtualProducts"
             [first]="first"
-            [totalRecords]="totalRecords"
+            [totalRecords]="totalProducts"
             [rows]="selectedSize"
             [rowsPerPageOptions]="sizeOptions"
             [paginator]="true"

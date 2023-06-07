@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {catchError, Observable, of, tap} from "rxjs";
+import {catchError, lastValueFrom, Observable, of, tap} from "rxjs";
 import {PageableProducts} from "../../interface/product/pagable-products";
 import {Product} from "../../interface/product/product";
 import {Search} from "../../interface/search/search";
@@ -15,7 +15,7 @@ export class ProductService {
   };
   constructor(private http:HttpClient) { }
 
-  searchProducts(searchQuery:Search): Observable<PageableProducts> {
+  async searchProducts(searchQuery:Search): Promise<PageableProducts> {
     let queryParams = new HttpParams();
     if(searchQuery){
       if(searchQuery.name != null && searchQuery.name.length > 0) queryParams = queryParams.append("name",searchQuery.name)
@@ -33,44 +33,32 @@ export class ProductService {
 
     console.log(queryParams.toString())
 
-    return this.http.get<PageableProducts>(`${this.productUrl}/public/search`,{params:queryParams}).pipe(
+    return  await lastValueFrom(this.http.get<PageableProducts>(`${this.productUrl}/public/search`,{params:queryParams}).pipe(
         tap(_ => {
           console.log(`fetched products`)
 
         }),
         catchError(this.handleError<PageableProducts>('getProducts', { products:[], total_pages:0,
           total_products:0}))
-    );
+    ));
   }
 
-  getProducts(): Observable<PageableProducts> {
+ async getProductById(id:string): Promise<Product> {
 
-    return this.http.get<PageableProducts>(`${this.productUrl}/private/find/all`)
-      .pipe(
-        tap(_ => {
-          console.log(`fetched products`)
-        }),
-        catchError(this.handleError<PageableProducts>('getProducts', { products:[], total_pages:0,
-          total_products:0}))
-      );
-  }
-
-  getProductById(id:string): Observable<Product> {
-
-    return this.http.get<Product>(`${this.productUrl}/public/find/id/${id}`)
+    return await lastValueFrom(this.http.get<Product>(`${this.productUrl}/public/find/id/${id}`)
       .pipe(
         tap(_ => {
           console.log(`fetched products`)
         }),
         catchError(this.handleError<Product>('getProductById', {} as Product))
-      );
+      ));
   }
 
-  getProductsByCategory(category:string, size:number): Observable<PageableProducts> {
+  async getProductsByCategory(category:string, size:number): Promise<PageableProducts> {
     let queryParams = new HttpParams()
     queryParams = queryParams.append("size",size)
 
-    return this.http.get<PageableProducts>(`${this.productUrl}/public/find/category/${category}`,{params:queryParams})
+    return await lastValueFrom(this.http.get<PageableProducts>(`${this.productUrl}/public/find/category/${category}`,{params:queryParams})
       .pipe(
         tap(_ => {
           console.log(`fetched products`)
@@ -78,59 +66,7 @@ export class ProductService {
         catchError(this.handleError<PageableProducts>('getProductsByCategory',
           { products:[], total_pages:0,
           total_products:0}))
-      );
-  }
-
-  getProductsBySubcategory(subcategory:String): Observable<PageableProducts> {
-
-    return this.http.get<PageableProducts>(`${this.productUrl}/private/find/subcategory/${subcategory}`)
-      .pipe(
-        tap(_ => {
-          console.log(`fetched products`)
-        }),
-        catchError(this.handleError<PageableProducts>('getProductsByCategory',
-          { products:[], total_pages:0,
-          total_products:0}))
-      );
-  }
-
-  getProductsByBrand(brand:String): Observable<PageableProducts> {
-
-    return this.http.get<PageableProducts>(`${this.productUrl}/private/find/brand/${brand}`)
-      .pipe(
-        tap(_ => {
-          console.log(`fetched products`)
-        }),
-        catchError(this.handleError<PageableProducts>('getProductsByBrand',
-          { products:[], total_pages:0,
-          total_products:0}))
-      );
-  }
-
-  addProduct(product: Product): Observable<Product> {
-
-    return this.http.post<Product>(`${this.productUrl}/private/add`, product, this.httpOptions).pipe(
-      tap((newProduct: Product) => console.log(`added product w/ id=${newProduct.id}`)),
-      catchError(this.handleError<Product>('addProduct'))
-    )
-
-  }
-
-  updateProduct(product: Product): Observable<any> {
-
-    return this.http.put<Product>(`${this.productUrl}/private/update`, product, this.httpOptions).pipe(
-      tap(_ => console.log(`updated product id=${product.id}`)),
-      catchError(this.handleError<any>('updateStudent'))
-    )
-  }
-
-  deleteProduct(id: string): Observable<any> {
-    const url = `${this.productUrl}/private/delete/${id}`;
-    return this.http.delete(url, this.httpOptions).pipe(
-      tap(res => console.log('HTTP response:', res)),
-      tap(_ => console.log(`deleted product id=${id}`)),
-      catchError(this.handleError<Product>('deleteProduct'))
-    );
+      ));
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

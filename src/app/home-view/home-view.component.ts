@@ -16,13 +16,15 @@ export class HomeViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.categoryService.getTopLevelCategories().subscribe(categories => {
+    this.categoryService.getTopLevelCategories().then(categories => {
       categories.forEach(category => this.productService.getProductsByCategory(category.name, this.size)
-        .subscribe(pagableProducts => {
+        .then(pagableProducts => {
           console.log('name: ', category.name)
           console.log('products: ', pagableProducts.products)
           this.categoryValues[category.name] = [...pagableProducts.products]
           console.log('map: ', this.categoryValues[category.name])
+        }).catch(reason => {
+          console.log("reason", reason)
         }))
       this.orderedCategories = categories.map(value => value.name).sort((a, b) => {
         if (a > b) {

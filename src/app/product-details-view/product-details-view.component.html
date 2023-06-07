@@ -5,8 +5,7 @@
         <p><b>Brand:</b> {{ selectedProduct.brand }}</p>
         <p><b>Price:</b> ${{ selectedProduct.price }}</p>
         <p><b>Category:</b> {{ selectedProduct.category }}</p>
-        <p><b>Stock:</b> {{ selectedProduct.stock }}</p>
         <p><b>Description:</b> {{ selectedProduct.description }}</p>
     </div>
-    <button pButton type="button" label="Buy" class="p-button-success" (click)="selectedProduct.id ? addToCart(selectedProduct.id): null"></button>
+    <button pButton type="button" label="Add to Cart" class="p-button-success" [disabled]="selectedProduct.stock == 0" (click)="selectedProduct.id ? addToCart(selectedProduct.id): null"></button>
 </div>

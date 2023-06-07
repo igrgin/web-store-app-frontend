@@ -18,7 +18,7 @@ import {BrandDto} from "../interface/brand/brand-dto";
 export class SearchProductsViewComponent implements OnInit {
   virtualProducts: Product[] = [];
   selectedSize = 40;
-  totalRecords = 0; // Total number of products
+  totalProducts = 0; // Total number of products
   selectedPage = 0; // Current page number
   name?: string; // Name search parameter, adjust the type as per your requirement
   category: string = (<string>this.route.snapshot.paramMap.get('category')); // Category search parameter, adjust the type as per your requirement
@@ -43,10 +43,10 @@ export class SearchProductsViewComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-    console.log("oninit")
+   ngOnInit(): void{
     this.route.params.subscribe(params => {
-      this.loading=true
+      this.selectedBrands = []
+      this.loading = true
       this.category = params['category']
       this.updateValues();
       if (this.category)
@@ -61,48 +61,56 @@ export class SearchProductsViewComponent implements OnInit {
         name: this.name
       }
 
-      this.search(initialSearchParams)
-      setTimeout(() => {
-        console.log('pagesItems:', this.pagesItems[this.selectedPage]);
-        this.virtualProducts = [...this.pagesItems[this.selectedPage]]
-        console.log('virtualProducts:', this.virtualProducts);
-        console.log(`virtualProducts length: ${this.virtualProducts.length}`);
-        this.loading=false
-      }, 1000);
+      this.search(initialSearchParams).then(
+        () => {console.log('pagesItems:', this.pagesItems[this.selectedPage]);
+          this.virtualProducts = [...this.pagesItems[this.selectedPage]]
+          console.log('virtualProducts:', this.virtualProducts);
+          console.log(`virtualProducts length: ${this.virtualProducts.length}`);
+          this.loading = false}
+      ).catch(reason => {
+        this.virtualProducts = []
+        this.loading = false
+      })
     });
 
   }
 
-  search(searchParams: Search): void {
-    console.log("search")
+  async search(searchParams: Search): Promise<string> {
+    console.log("search");
 
-    this.productService
-      .searchProducts(searchParams)
-      .subscribe((value) => {
+    return await new Promise<string>((resolve, reject) => {
+      this.productService.searchProducts(searchParams).then((value) => {
         this.pagesItems['searchParams'] = {
           category: searchParams.category,
           subcategory: searchParams.subcategory,
           brands: searchParams.brands,
           priceRange: searchParams.priceRange,
           name: searchParams.name
-        }
+        };
+
         this.pagesItems['size'] = this.selectedSize
         this.pagesItems['page'] = this.selectedPage
         console.log('pagable products: ', value.products)
         this.pagesItems[this.selectedPage] = [...value.products]
-        this.totalRecords = value.total_products;
-        console.log(this.totalRecords)
-      });
+        this.totalProducts = value.total_products;
 
-    console.log(`name: ${this.name}`)
-    console.log(`category: ${this.category}`)
-    console.log(`subcategory: ${this.subcategory}`)
-    console.log(`brands: ${this.selectedBrands}`)
-    console.log(`Price range: ${this.selectedPriceRange[0]} - ${this.selectedPriceRange[1]}`)
-    console.log(`Size: ${this.selectedSize}`)
-    console.log(`first: ${this.first}`)
-    console.log(`Page: ${this.selectedPage}`)
+        console.log(`name: ${this.name}`);
+        console.log(`category: ${this.category}`);
+        console.log(`subcategory: ${this.subcategory}`);
+        console.log(`brands: ${this.selectedBrands}`);
+        console.log(`Price range: ${this.selectedPriceRange[0]} - ${this.selectedPriceRange[1]}`);
+        console.log(`Size: ${this.selectedSize}`);
+        console.log(`first: ${this.first}`);
+        console.log(`Page: ${this.selectedPage}`);
+
+        resolve("success"); // Resolve with true
+      }).catch((reason) => {
+        console.log("search error: ", reason);
+        reject("failure"); // Resolve with false
+      });
+    });
   }
+
 
 
   loadProducts(event: any, isButtonClicked: boolean) {
@@ -139,13 +147,17 @@ export class SearchProductsViewComponent implements OnInit {
         category: this.pagesItems['searchParams'].category
       }
 
-      this.search(searchParams);
-      setTimeout(() => {
-        console.log('pagesItems:', this.pagesItems[this.selectedPage]);
-        this.virtualProducts = [...this.pagesItems[this.selectedPage]]
-        event.forceUpdate = true;
+      this.search(searchParams).then(
+        () => {
+          console.log('pagesItems:', this.pagesItems[this.selectedPage]);
+          this.virtualProducts = [...this.pagesItems[this.selectedPage]]
+          event.forceUpdate = true;
+          this.loading = false
+        }
+      ).catch(reason => {
+        this.virtualProducts = []
         this.loading = false
-      }, 1000);
+      })
     } else {
 
       this.virtualProducts = [...this.pagesItems[this.selectedPage]]

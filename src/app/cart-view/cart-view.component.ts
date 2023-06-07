@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {StorageService} from "../service/storage/storage.service";
-import {TransactionService} from "../service/transaction/transaction.service";
+import {PaymentService} from "../service/payment/payment.service";
+import {ProductService} from "../service/product/product.service";
+import {ToastService} from "../service/toast/toast.service";
 
 
 @Component({
@@ -10,10 +12,11 @@ import {TransactionService} from "../service/transaction/transaction.service";
 })
 export class CartViewComponent implements OnInit{
   cartItems:{ name:string,stock:number,id:string,price:number,subcategory:string, quantity: number }[] = [];
-  first = 0;
+  first: number = 0;
   sum: number = 0;
 
-  constructor(private storageService:StorageService, private transactionService:TransactionService) {}
+  constructor(private storageService:StorageService, private transactionService:PaymentService,
+              private productService:ProductService, private toastService:ToastService) {}
 
   ngOnInit(): void {
     if(this.storageService.doesCartExist())
@@ -30,15 +33,23 @@ export class CartViewComponent implements OnInit{
   }
 
   checkout() {
-    this.transactionService.saveTransaction({products:this.storageService.getCart().map(value => {
-        return {id:value.id,quantity:value.quantity, name:value.name, price:Number(value.price.toFixed(2))*value.quantity}
-      }), created_at:new Date().toISOString()}).subscribe(
+    this.transactionService.saveTransaction({
+      cart_product: this.storageService.getCart().map(value => {
+        return {
+          product_id: value.id,
+          quantity:value.quantity
+        };
+      }),
+      created_at: new Date().toISOString()
+    }).subscribe(
       _ => {
-        this.storageService.deleteCart()
-        this.cartItems = []
-        this.sum = 0
-      }
-    )
+        this.storageService.deleteCart();
+        this.cartItems = [];
+        this.sum = 0;
+        this.toastService.showSuccess("Checkout Successful!","Checkout successfully completed.")
+      }, error => this.toastService.showError("An error occurred",
+        "There was a problem while checking out. Please try again.")
+    );
   }
 
   removeFromCart(id: string) {

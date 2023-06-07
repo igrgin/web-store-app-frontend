@@ -9,4 +9,5 @@ export interface Product {
   stock:number;
   description:string;
   image_url:string;
+  quantity?:number
 }

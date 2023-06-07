@@ -1,0 +1,9 @@
+<div class="flex-item">
+  <div>
+    <p-dropdown [options]="brandOptions" [(ngModel)]="selectedBrand" placeholder="Choose a Brand"></p-dropdown>
+  </div>
+</div>
+<div style="height: 400px">
+  <p-chart *ngIf="chartData[selectedBrand]" type="bar" [data]="chartData[selectedBrand]" height="80vh"></p-chart>
+</div>
+

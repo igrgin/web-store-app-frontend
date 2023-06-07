@@ -43,9 +43,10 @@
         <div class="sidebar">
           <div class="total-price">
             <h3>Total Price</h3>
-            <h2>{{ sum  + '€' }}</h2>
+            <h2>{{ sum + '€' }}</h2>
           </div>
-           <button class="checkout-button" (click)="checkout()">Checkout</button>
+          <p-button label="Checkout" styleClass="p-button-raised p-button-warning" [disabled]="cartItems.length == 0"
+                    (click)="checkout()"></p-button>
         </div>
       </div>
     </div>

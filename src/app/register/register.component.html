@@ -1,26 +1,42 @@
 <main class="form-signin">
   <form *ngIf="form" [formGroup]="form" (submit)="onSubmit()">
-    <h1 class="h3 mb-3 fw-normal">Please register</h1>
-
-    <div class="p-field form-floating">
-      <label for="email">Email address</label>
-      <input id="email" formControlName="email" type="email" pInputText placeholder="name@example.com">
+    <h1 class="h3 mb-3 fw-normal">Register</h1>
+    <div *ngIf="form.get('password')  && form.get('password')?.invalid
+    && (form.get('password')?.dirty || form.get('password')?.touched)">
+      <div *ngIf="form.get('password')?.errors">Invalid password.</div>
     </div>
+    <div *ngIf="form.get('email')  && form.get('email')?.invalid
+    && (form.get('email')?.dirty || form.get('email')?.touched)">
+      <div *ngIf="form.get('email')?.errors">Invalid email.</div>
+    </div>
+    <div *ngIf="form.get('first_name')  && form.get('first_name')?.invalid
+    && (form.get('first_name')?.dirty || form.get('first_name')?.touched)">
+      <div *ngIf="form.get('first_name')?.errors">First name can't be empty.</div>
+    </div>
+    <div *ngIf="form.get('last_name')  && form.get('last_name')?.invalid
+    && (form.get('last_name')?.dirty || form.get('last_name')?.touched)">
+      <div *ngIf="form.get('last_name')?.errors">Last Name can't be empty.</div>
+    </div><br>
 
     <div class="p-field form-floating">
-      <label>Password</label>
+      <label for="email">Email address</label><br>
+      <input id="email" formControlName="email" type="email" pInputText  placeholder="name@example.com">
+    </div><br>
+
+    <div class="p-field form-floating">
+      <label>Password</label><br>
       <input formControlName="password" type="password" pInputText placeholder="Password">
-    </div>
+    </div><br>
 
     <div class="p-field form-floating">
-      <label>First Name</label>
+      <label>First Name</label><br>
       <input formControlName="first_name" pInputText placeholder="First Name">
-    </div>
+    </div><br>
 
     <div class="p-field form-floating">
-      <label>Last Name</label>
+      <label>Last Name</label><br>
       <input formControlName="last_name" pInputText placeholder="Last Name">
-    </div>
+    </div><br>
 
     <button class="p-button p-component w-100 btn btn-lg btn-primary" type="submit">Submit</button>
   </form>

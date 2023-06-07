@@ -26,6 +26,17 @@ export class BrandService {
       );
   }
 
+  getAllBrands(): Observable<BrandDto[]> {
+
+    return this.http.get<BrandDto[]>(`${this.brandUrl}/public/find/all`)
+      .pipe(
+        tap(_ => {
+          console.log(`fetched brands`)
+        }),
+        catchError(this.handleError<BrandDto[]>('getAllBrands', []))
+      );
+  }
+
   getBrandsByCategoryName(categoryName: string): Observable<BrandDto[]> {
 
     return this.http.get<BrandDto[]>(`${this.brandUrl}/public/find/category/name/${categoryName}`,this.httpOptions)

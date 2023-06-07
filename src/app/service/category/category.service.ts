@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {catchError, Observable, of, tap} from "rxjs";
+import {catchError, lastValueFrom, Observable, of, tap} from "rxjs";
 import {CategoryDto} from "../../interface/category/category-dto";
 
 @Injectable({
@@ -49,15 +49,15 @@ export class CategoryService {
 
   }
 
-  getTopLevelCategories(): Observable<CategoryDto[]> {
+  async getTopLevelCategories(): Promise<CategoryDto[]> {
 
-    return this.http.get<CategoryDto[]>(`${this.categoryUrl}/public/find/top`,this.httpOptions)
+    return await lastValueFrom(this.http.get<CategoryDto[]>(`${this.categoryUrl}/public/find/top`,this.httpOptions)
       .pipe(
         tap(_ => {
           console.log(`fetched Top Level Categories`)
         }),
         catchError(this.handleError<CategoryDto[]>('getTopLevelCategories', []))
-      );
+      ));
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
