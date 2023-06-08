@@ -6,7 +6,6 @@ import {CategoryService} from "../service/category/category.service";
 import {Router} from "@angular/router";
 import {AuthGuard} from "../guard/auth.guard";
 import {ToastService} from "../service/toast/toast.service";
-import {AuthenticationInterceptor} from "../interceptor/authentication.interceptor";
 
 
 @Component({
@@ -67,7 +66,7 @@ export class MenuViewComponent implements OnInit {
       this.getMenubarCategories().then(categories => {
         console.log("1")
         this.items = []
-        let tempItems: MenuItem[] = []
+        let tempItems: MenuItem[];
         if (this.storageService.isLoggedIn()) {
           if (this.authService.user && this.authService.user.role === "USER") {
             tempItems = [...this.userItems]
@@ -107,7 +106,7 @@ export class MenuViewComponent implements OnInit {
 
     this.getMenubarCategories().then(categories => {
       console.log("2")
-      let tempItems: MenuItem[] = []
+      let tempItems: MenuItem[];
 
       if (this.authService.user && this.authService.user.role === "USER") {
         tempItems = [...this.userItems]
@@ -129,7 +128,7 @@ export class MenuViewComponent implements OnInit {
         next: value => {
           this.items = []
           this.getMenubarCategories().then(categories => {
-            let tempItems: MenuItem[] = []
+            let tempItems: MenuItem[];
             tempItems = [...this.anonymousItems]
             tempItems.splice(1, 0, ...categories)
             this.items = tempItems
@@ -149,7 +148,7 @@ export class MenuViewComponent implements OnInit {
   menuUpdateAfterTokenExpires():any{
     this.items = []
     this.getMenubarCategories().then(categories => {
-      let tempItems: MenuItem[] = []
+      let tempItems: MenuItem[];
       tempItems = [...this.anonymousItems]
       tempItems.splice(1, 0, ...categories)
       this.items = tempItems

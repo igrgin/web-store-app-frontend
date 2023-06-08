@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {PaymentService} from "../service/payment/payment.service";
 import {forkJoin, map, switchMap} from "rxjs";
 import {ProductService} from "../service/product/product.service";
@@ -126,6 +126,6 @@ export class TransactionViewComponent {
         console.log(transactionsWithProducts)
         this.totalTransactions = value.total_transactions;
       });
-    }, error => {console.log("NOPE NOPE NOPE")});
+    }, error => error);
   }
 }

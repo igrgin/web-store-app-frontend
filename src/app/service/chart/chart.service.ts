@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {StorageService} from "../storage/storage.service";
 import {catchError, Observable, of, tap} from "rxjs";
 
 @Injectable({
@@ -9,7 +8,7 @@ import {catchError, Observable, of, tap} from "rxjs";
 export class ChartService {
 
   private chartUrl:String = 'http://localhost:8080/chart/api';
-  constructor(private http:HttpClient, private storageService:StorageService) { }
+  constructor(private http:HttpClient) { }
 
   getTopProductsSoldByBrand(brand:string,columnSize:number): Observable<any> {
     let queryParams = new HttpParams();

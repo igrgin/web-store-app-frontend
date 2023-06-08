@@ -1,9 +1,9 @@
 import {EventEmitter, Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from "@angular/router";
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 import {AuthService} from "../service/auth/auth.service";
 import {StorageService} from "../service/storage/storage.service";
 import {Observable, of, switchMap} from "rxjs";
-import {map, catchError} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
 import {ToastService} from "../service/toast/toast.service";
 import {JwtHelperService} from "@auth0/angular-jwt";
 

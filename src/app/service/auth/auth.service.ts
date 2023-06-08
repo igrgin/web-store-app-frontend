@@ -1,12 +1,11 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {catchError, lastValueFrom, Observable, of, tap} from "rxjs";
+import {Observable, of, tap} from "rxjs";
 import {UserProfile} from "../../interface/auth/user-profile";
 import {LoginModel} from "../../interface/auth/login-model";
 import {TokenModel} from "../../interface/auth/token-model";
 import {RegisterModel} from "../../interface/auth/register-model";
 import {StorageService} from "../storage/storage.service";
-import {JwtHelperService} from "@auth0/angular-jwt";
 
 const AUTH_API = 'http://localhost:8080/auth/api/';
 const USER_PROFILE_API ='http://localhost:8080/user/api'
@@ -22,7 +21,7 @@ export class AuthService {
   onLoginStatusChange: EventEmitter<{action:boolean,shouldToast:boolean}> = new EventEmitter<{action:boolean,shouldToast:boolean}>();
   user?: UserProfile | undefined;
 
-  constructor(private http: HttpClient, private storageService:StorageService, private helper:JwtHelperService) {
+  constructor(private http: HttpClient, private storageService:StorageService) {
   }
 
 

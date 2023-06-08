@@ -1,4 +1,4 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   HTTP_INTERCEPTORS,
   HttpErrorResponse,
@@ -7,12 +7,11 @@ import {
   HttpInterceptor,
   HttpRequest
 } from '@angular/common/http';
-import {catchError, Observable, of, switchMap, take, throwError} from 'rxjs';
+import {catchError, Observable, switchMap, throwError} from 'rxjs';
 import {AuthService} from "../service/auth/auth.service";
 import {StorageService} from "../service/storage/storage.service";
 import {Router} from "@angular/router";
 import {ToastService} from "../service/toast/toast.service";
-import {JwtHelperService} from "@auth0/angular-jwt";
 
 @Injectable()
 export class AuthenticationInterceptor implements HttpInterceptor {

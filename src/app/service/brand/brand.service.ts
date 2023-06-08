@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {catchError, Observable, of, tap} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {BrandDto} from "../../interface/brand/brand-dto";
-import {CategoryDto} from "../../interface/category/category-dto";
 
 @Injectable({
   providedIn: 'root'
