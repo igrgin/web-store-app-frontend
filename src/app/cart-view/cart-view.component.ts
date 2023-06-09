@@ -47,7 +47,7 @@ export class CartViewComponent implements OnInit{
         this.cartItems = [];
         this.sum = 0;
         this.toastService.showSuccess("Checkout Successful!","Checkout successfully completed.")
-      }, error => this.toastService.showError("An error occurred",
+      }, () => this.toastService.showError("An error occurred",
         "There was a problem while checking out. Please try again.")
     );
   }
@@ -55,5 +55,10 @@ export class CartViewComponent implements OnInit{
   removeFromCart(id: string) {
     this.storageService.removeFromCart(id)
     this.cartItems=this.storageService.getCart()
+  }
+
+  removeAllFromCart() {
+    this.storageService.deleteCart()
+    this.cartItems=[]
   }
 }

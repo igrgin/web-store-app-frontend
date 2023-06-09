@@ -20,7 +20,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent, title:'Login'},
   {path: 'search/:category', component: SearchProductsViewComponent, canActivate:[AuthGuard]},
   {path: 'cart', component: CartViewComponent, title:'My Cart', canActivate:[AuthGuard]},
-  {path: 'register', component: RegisterComponent, title:'Register', canActivate:[AuthGuard]},
+  {path: 'register', component: RegisterComponent, title:'Register'},
   {path: 'admin/panel', component: ChartViewComponent, title:'Admin Panel', canActivate:[AuthGuard]},
   {path: 'problem/:errorCode', component: ForbiddenPageComponent},
   { path: '**', pathMatch   : 'full', component: ForbiddenPageComponent, title:'Error'}

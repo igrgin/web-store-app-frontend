@@ -45,8 +45,11 @@ export class AuthGuard implements CanActivate {
       (this.storageService.isLoggedIn() && this.jwtHelper.isTokenExpired((<string>this.storageService.getAccessToken()))))
       return this.checkRole(routePath)
 
-    if ((this.storageService.hasRefreshToken() && this.jwtHelper.isTokenExpired(this.storageService.getRefreshToken()))) {
+    if ((this.storageService.hasRefreshToken() && this.jwtHelper.isTokenExpired(this.storageService.getRefreshToken())) && ((this.storageService.isLoggedIn() && this.jwtHelper.isTokenExpired((<string>this.storageService.getAccessToken()))) || !this.storageService.isLoggedIn())) {
+      console.log("1")
       this.toastService.showError("You've been logged out", "There was a problem logging you in.")
+      this.storageService.cleanRefreshToken()
+      this.storageService.cleanAccessToken()
       this.onLoginStatusChange.emit({action:false,shouldToast:false})
       this.authService.user=undefined
       this.router.navigate(['login']);
@@ -54,10 +57,13 @@ export class AuthGuard implements CanActivate {
     }
 
     if (!this.storageService.isLoggedIn() && this.storageService.hasRefreshToken()) {
+      console.log("2")
       return this.authService.refresh().pipe(
         switchMap(() => this.checkRole(routePath)),
         catchError(() => {
           this.toastService.showError("You've been logged out", "There was a problem logging you in.")
+          this.storageService.cleanRefreshToken()
+          this.storageService.cleanAccessToken()
           this.onLoginStatusChange.emit({action:false,shouldToast:false})
           this.authService.user=undefined
           this.router.navigate(['login']);

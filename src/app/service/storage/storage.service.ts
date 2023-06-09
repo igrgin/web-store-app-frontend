@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {CookieService} from "ngx-cookie-service";
 import {ProductService} from "../product/product.service";
 
@@ -10,6 +10,7 @@ const CART = 'cart';
   providedIn: 'root'
 })
 export class StorageService {
+  changeCart: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(private cookieService: CookieService, private productService: ProductService) {
   }
@@ -20,15 +21,14 @@ export class StorageService {
 
   cleanRefreshToken(): void {
     this.cookieService.delete(REFRESH_TOKEN)
+    console.log("does refresh exist after delete: ", this.getRefreshToken())
   }
 
   public saveAccessToken(accessToken: string): void {
-    //sessionStorage.removeItem(ACCESS_TOKEN);
     sessionStorage.setItem(ACCESS_TOKEN, accessToken);
   }
 
   public saveRefreshToken(refreshToken: any): void {
-    //if(this.hasRefreshToken()) this.cookieService.delete(REFRESH_TOKEN);
     const expirationDate = new Date()
     expirationDate.setDate(expirationDate.getDate() + 7)
     this.cookieService.set(REFRESH_TOKEN, refreshToken, {path: '/',expires:expirationDate,domain:'localhost',secure:true});
@@ -87,7 +87,6 @@ export class StorageService {
           }
         )
       }
-
       console.log(this.getCart())
 
     } else {
@@ -99,6 +98,7 @@ export class StorageService {
         }]), {path: '/'})
       )
     }
+     this.changeCart.emit()
 
   }
 
@@ -134,13 +134,14 @@ export class StorageService {
         currentCart.splice(indexOfProduct, 1)
         this.cookieService.set(CART, JSON.stringify(currentCart), {path: '/'})
       }
-
     }
+    this.changeCart.emit()
   }
 
   public deleteCart() {
     console.log("deleted CART")
     this.cookieService.delete(CART,'/')
+    this.changeCart.emit()
   }
 
   public doesCartExist() {
@@ -156,6 +157,7 @@ export class StorageService {
     quantity: number
   }[]) {
     this.cookieService.set(CART, JSON.stringify(cartItems), {path: '/'})
+    this.changeCart.emit()
 
   }
 }

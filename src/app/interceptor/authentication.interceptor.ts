@@ -43,18 +43,20 @@ export class AuthenticationInterceptor implements HttpInterceptor {
                 Authorization: `Bearer ${this.storageService.getAccessToken()}`,
               }
             }))
-          })
+          }),catchError(() =>  throwError(()=> {
+            this.authService.user=undefined
+            this.storageService.cleanAccessToken()
+            this.storageService.getRefreshToken()
+            this.router.navigate(['login']);
+            this.toastService.showError("a problem occurred","You've been signed out.")
+          }))
         )
       }
       this.refresh = false
-      return throwError(() => {
-        this.authService.onLoginStatusChange.emit({action:false,shouldToast:false})
-        this.authService.user=undefined
-        this.router.navigate(['login']);
-        this.toastService.showError("a problem occurred","You've been signed out.")
-      })
+      return throwError(() => {})
     }));
   }
+
 }
 
 export const authenticationInterceptorProviders = [
