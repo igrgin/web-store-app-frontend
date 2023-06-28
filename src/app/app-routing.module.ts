@@ -13,8 +13,7 @@ import {ForbiddenPageComponent} from "./forbidden-page/forbidden-page.component"
 import {AuthGuard} from "./guard/auth.guard";
 
 const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  {path: 'home', component: HomeViewComponent, title:'home',canActivate:[AuthGuard]},
+  {path: 'home', component: HomeViewComponent, title:'home', canActivate:[AuthGuard]},
   {path: 'product/:id', component: ProductDetailsViewComponent, canActivate:[AuthGuard]},
   {path: 'profile/transactions', component: TransactionViewComponent,title:'My Transactions', canActivate:[AuthGuard]},
   {path: 'login', component: LoginComponent, title:'Login'},
@@ -23,7 +22,8 @@ const routes: Routes = [
   {path: 'register', component: RegisterComponent, title:'Register'},
   {path: 'admin/panel', component: ChartViewComponent, title:'Admin Panel', canActivate:[AuthGuard]},
   {path: 'problem/:errorCode', component: ForbiddenPageComponent},
-  { path: '**', pathMatch   : 'full', component: ForbiddenPageComponent, title:'Error'}
+  {path: '', redirectTo: '/home', pathMatch: 'full' },
+  {path: '**', pathMatch   : 'full', component: ForbiddenPageComponent, title:'Error'}
 ];
 
 @NgModule({

@@ -20,7 +20,7 @@ export class StorageService {
   }
 
   cleanRefreshToken(): void {
-    this.cookieService.delete(REFRESH_TOKEN)
+    this.cookieService.delete(REFRESH_TOKEN,'/')
     console.log("does refresh exist after delete: ", this.getRefreshToken())
   }
 
@@ -31,7 +31,7 @@ export class StorageService {
   public saveRefreshToken(refreshToken: any): void {
     const expirationDate = new Date()
     expirationDate.setDate(expirationDate.getDate() + 7)
-    this.cookieService.set(REFRESH_TOKEN, refreshToken, {path: '/',expires:expirationDate,domain:'localhost',secure:true});
+    this.cookieService.set(REFRESH_TOKEN, refreshToken, {path: '/', expires:expirationDate});
   }
 
   public getAccessToken(): String | null {

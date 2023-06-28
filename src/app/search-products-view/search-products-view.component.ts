@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from "../service/product/product.service";
 import {Search} from "../interface/search/search";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Product} from "../interface/product/product";
 import {CategoryService} from "../service/category/category.service";
 import {BrandService} from "../service/brand/brand.service";
@@ -39,7 +39,8 @@ export class SearchProductsViewComponent implements OnInit {
     private productService: ProductService,
     private route: ActivatedRoute,
     private titleService: Title,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private router:Router
   ) {
   }
 
@@ -67,7 +68,7 @@ export class SearchProductsViewComponent implements OnInit {
           console.log('virtualProducts:', this.virtualProducts);
           console.log(`virtualProducts length: ${this.virtualProducts.length}`);
           this.loading = false}
-      ).catch(reason => {
+      ).catch(_ => {
         this.virtualProducts = []
         this.loading = false
       })
@@ -154,7 +155,7 @@ export class SearchProductsViewComponent implements OnInit {
           event.forceUpdate = true;
           this.loading = false
         }
-      ).catch(reason => {
+      ).catch(_ => {
         this.virtualProducts = []
         this.loading = false
       })
@@ -184,7 +185,9 @@ export class SearchProductsViewComponent implements OnInit {
     this.categoryService
       .getSubcategoriesByCategoryName(category)
       .subscribe((categories: CategoryDto[]) => {
+        if(categories.length > 0)
         this.subcategories = categories.map((category: CategoryDto) => category.name);
+        else this.router.navigate(['problem/404'])
       });
   }
 

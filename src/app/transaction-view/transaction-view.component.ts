@@ -109,7 +109,7 @@ export class TransactionViewComponent {
                   };
                   transactionWithProducts.products?.push(populatedProduct);
                 });
-
+                console.log("transactionsWithProducts: ",transactionWithProducts)
                 return transactionWithProducts; // Return the transaction with products
 
               }));
@@ -117,15 +117,18 @@ export class TransactionViewComponent {
       });
 
       forkJoin(transactionsWithProducts$).subscribe(transactionsWithProducts => {
+        console.log("transactionsWithProducts: ",transactionsWithProducts)
         transactionsWithProducts.sort((a, b) => {
           const dateA = new Date(a.created_at || '');
           const dateB = new Date(b.created_at || '');
           return dateB.getTime() - dateA.getTime();
         });
         this.transactionHistory[this.selectedPage] = transactionsWithProducts;
-        console.log(transactionsWithProducts)
+        console.log("transactionsWithProducts: ",transactionsWithProducts)
         this.totalTransactions = value.total_transactions;
       });
     }, error => error);
+    if(!this.transactionHistory[this.selectedPage]) this.transactionHistory[this.selectedPage]=[]
   }
+
 }

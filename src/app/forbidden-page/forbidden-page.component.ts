@@ -7,15 +7,26 @@ import {Title} from "@angular/platform-browser";
   templateUrl: './forbidden-page.component.html'
 })
 export class ForbiddenPageComponent implements OnInit {
-  title:string ='';
-  constructor(private route:ActivatedRoute,private titleService:Title) {
+  title: string = '';
+  errorCodeText: any = {
+    "404": "Page Not Found",
+    "403": "Forbidden",
+    "401": "Unauthorized"
+  }
+
+  constructor(private route: ActivatedRoute, private titleService: Title) {
   }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-
-      this.title = params['errorCode']
-      this.titleService.setTitle(this.title)
+      console.log(params['errorCode'])
+      if (params['errorCode']) {
+        this.title = params['errorCode']
+        this.titleService.setTitle(this.title)
+      } else {
+        this.title = "404"
+        this.titleService.setTitle(this.title)
+      }
     })
   }
 

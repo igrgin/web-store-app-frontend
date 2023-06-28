@@ -25,54 +25,64 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     const routePath = route.url.map(value => value.path);
-    console.log(routePath)
-
+    console.log("route: ",routePath)
+    console.log("access: ", this.storageService.getAccessToken())
+    console.log("refresh: ", this.storageService.getRefreshToken())
     if (!this.storageService.isLoggedIn() && !this.storageService.hasRefreshToken()
-      && !(routePath.includes("admin") || routePath.includes("profile"))) {
+      && (!(routePath.includes("admin") || routePath.includes("profile")))) {
+      console.log("a")
       return of(true);
     }
 
     if (!this.storageService.isLoggedIn() && !this.storageService.hasRefreshToken()
       && (routePath.includes("admin") || routePath.includes("profile"))) {
+      console.log("b")
       this.toastService.showInfo("log in to continue", "You must login to proceed.")
-      this.authService.user=undefined
+      this.authService.user = undefined
       this.router.navigate(['login']);
       return of(false);
     }
 
-    if (!this.authService.user &&
-      (this.storageService.hasRefreshToken() && this.jwtHelper.isTokenExpired(this.storageService.getRefreshToken())) &&
-      (this.storageService.isLoggedIn() && this.jwtHelper.isTokenExpired((<string>this.storageService.getAccessToken()))))
-      return this.checkRole(routePath)
+    if ((this.storageService.hasRefreshToken() && !this.jwtHelper.isTokenExpired(this.storageService.getRefreshToken())) &&
+      (this.storageService.isLoggedIn() && !this.jwtHelper.isTokenExpired((<string>this.storageService.getAccessToken())))) {
+      console.log("c")
+      return routePath.includes("admin") || !this.authService.user ? this.checkRole(routePath) : of(true)
+    }
 
-    if ((this.storageService.hasRefreshToken() && this.jwtHelper.isTokenExpired(this.storageService.getRefreshToken())) && ((this.storageService.isLoggedIn() && this.jwtHelper.isTokenExpired((<string>this.storageService.getAccessToken()))) || !this.storageService.isLoggedIn())) {
-      console.log("1")
-      this.toastService.showError("You've been logged out", "There was a problem logging you in.")
+    if (this.storageService.hasRefreshToken() && this.jwtHelper.isTokenExpired(this.storageService.getRefreshToken())) {
+      console.log("access: ", this.storageService.getAccessToken())
+      console.log("expired refresh: ", this.storageService.getRefreshToken())
+      this.toastService.showWarning("Your session has ended", "You've been logged out.")
+      this.onLoginStatusChange.emit({action: false, shouldToast: false})
+      this.authService.user = undefined
       this.storageService.cleanRefreshToken()
       this.storageService.cleanAccessToken()
-      this.onLoginStatusChange.emit({action:false,shouldToast:false})
-      this.authService.user=undefined
+      console.log("d")
       this.router.navigate(['login']);
       return of(false);
-    }
-
-    if (!this.storageService.isLoggedIn() && this.storageService.hasRefreshToken()) {
-      console.log("2")
+    }else{
+      console.log("access: ", this.storageService.getAccessToken())
+      console.log("refresh: ", this.storageService.getRefreshToken())
+      console.log("e")
       return this.authService.refresh().pipe(
-        switchMap(() => this.checkRole(routePath)),
+        switchMap(() => {
+
+          return routePath.includes("admin") || !this.authService.user ? this.checkRole(routePath) : of(true)
+        }),
         catchError(() => {
-          this.toastService.showError("You've been logged out", "There was a problem logging you in.")
+          this.toastService.showError("There was a problem", "You've been logged out.")
           this.storageService.cleanRefreshToken()
           this.storageService.cleanAccessToken()
-          this.onLoginStatusChange.emit({action:false,shouldToast:false})
-          this.authService.user=undefined
+          this.onLoginStatusChange.emit({action: false, shouldToast: false})
+          this.authService.user = undefined
+          console.log("f")
           this.router.navigate(['login']);
           return of(false);
         })
       );
-    } else {
-      return this.checkRole(routePath)
     }
+
+
   }
 
   private checkRole(routePath: string[]): Observable<boolean> {
@@ -94,7 +104,10 @@ export class AuthGuard implements CanActivate {
             this.onLoginStatusChange.emit({action: false, shouldToast: false})
             this.toastService.showError("An error occurred", "There was a problem while logging you in. " +
               "Please try again.")
-            this.authService.user=undefined
+            this.authService.user = undefined
+            this.storageService.cleanRefreshToken()
+            this.storageService.cleanAccessToken()
+            console.log("g")
             this.router.navigate(['login']);
             return false;
           }
@@ -106,7 +119,10 @@ export class AuthGuard implements CanActivate {
         console.error(err);
         this.toastService.showError("An error occurred", "There was a problem while logging you into " +
           "the system. Please try again")
-        this.authService.user=undefined
+        this.authService.user = undefined
+        this.storageService.cleanRefreshToken()
+        this.storageService.cleanAccessToken()
+        console.log("g")
         this.router.navigate(['login']);
         this.onLoginStatusChange.emit({action: true, shouldToast: true})
         return of(false);

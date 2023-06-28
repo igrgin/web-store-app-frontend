@@ -78,10 +78,13 @@ export class MenuViewComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       this.initiateMenu();
-      this.authService.onLoginStatusChange.subscribe(value => this.refreshMenubarLoginState(value.action,value.shouldToast));
-      this.authGuard.onLoginStatusChange.subscribe(value => this.refreshMenubarLoginState(value.action,value.shouldToast));
+      this.authService.onLoginStatusChange.subscribe(value =>
+        this.refreshMenubarLoginState(value.action,value.shouldToast));
+      this.authGuard.onLoginStatusChange.subscribe(value =>
+        this.refreshMenubarLoginState(value.action,value.shouldToast));
       this.storageService.changeCart.subscribe(() => this.updateCart())
       this.router.events.subscribe(event => {
+        console.log("USER ROLE: ", this.authService.user)
         if(event instanceof NavigationEnd) this.initiateMenu()
       });
     }, 1000)
@@ -131,71 +134,94 @@ export class MenuViewComponent implements OnInit {
   }
 
   private login() {
-
     this.getMenubarCategories().then(categories => {
       console.log("2")
       let tempItems: MenuItem[];
-
       if (this.authService.user && this.authService.user.role === "USER") {
         tempItems = [...this.userItems]
-        if(this.storageService.getCart().length == 0) tempItems.filter(value => value.label=="Cart")[0].badge=undefined
-        else tempItems.filter(value => value.label=="Cart")[0].badge=this.storageService.getCart().length.toString()
+        if(this.storageService.getCart().length == 0)
+          tempItems.filter(value => value.label=="Cart")[0].badge=undefined
+        else tempItems.filter(value => value.label=="Cart")[0].badge=this.storageService.getCart()
+          .length.toString()
         tempItems.splice(1, 0, ...categories)
       } else {
         tempItems = [...this.adminItems]
-        if(this.storageService.getCart().length == 0) tempItems.filter(value => value.label=="Cart")[0].badge=undefined
-        else tempItems.filter(value => value.label=="Cart")[0].badge=this.storageService.getCart().length.toString()
+        if(this.storageService.getCart().length == 0)
+          tempItems.filter(value => value.label=="Cart")[0].badge=undefined
+        else
+          tempItems.filter(value => value.label=="Cart")[0].badge=this.storageService.getCart()
+            .length.toString()
         tempItems.splice(1, 0, ...categories)
       }
-      this.items = []
-      this.items = tempItems
-    }).catch(() => this.items = this.anonymousItems)
-  }
-
-  logout(shouldToast:boolean): any {
-    console.log("3 ",this.storageService.isLoggedIn())
-    if (this.storageService.isLoggedIn()) {
-      this.authService.logout().subscribe({
-        next: () => {
-          this.items = []
-          this.getMenubarCategories().then(categories => {
-            let tempItems: MenuItem[];
-            tempItems = [...this.anonymousItems]
-            if(this.storageService.getCart().length == 0) tempItems.filter(value => value.label=="Cart")[0].badge=undefined
-            else tempItems.filter(value => value.label=="Cart")[0].badge=this.storageService.getCart().length.toString()
-            tempItems.splice(1, 0, ...categories)
-            this.items = tempItems
-          }).catch(() => this.items = [...this.anonymousItems])
-          if(shouldToast) this.toastService.showSuccess("Log out", "You've been logged out.")
-        },
-        error: err => {
-          this.storageService.cleanAccessToken()
-          this.storageService.getRefreshToken()
-          console.log(err);
-        }
-      });
-    }
-    this.router.navigate(['home'])
-  }
-
-  menuUpdateAfterTokenExpires():any{
-    this.items = []
-    this.getMenubarCategories().then(categories => {
-      let tempItems: MenuItem[];
-      tempItems = [...this.anonymousItems]
-      if(this.storageService.getCart().length == 0) tempItems.filter(value => value.label=="Cart")[0].badge=undefined
-      else tempItems.filter(value => value.label=="Cart")[0].badge=this.storageService.getCart().length.toString()
-      tempItems.splice(1, 0, ...categories)
       this.items = tempItems
     }).catch(() => {
-      let tempItems: MenuItem[];
-      tempItems = [...this.anonymousItems]
-      if(this.storageService.getCart().length == 0) tempItems.filter(value => value.label=="Cart")[0].badge=undefined
-      else tempItems.filter(value => value.label=="Cart")[0].badge=this.storageService.getCart().length.toString()
-      this.items = tempItems
+      if(this.storageService.isLoggedIn()) this.toastService.showError("There was an error",
+        "You've been logged out")
     })
   }
 
+  logout(shouldToast:boolean): any {
+    this.authService.logoutInProgress=true
+    console.log("3 ",this.storageService.isLoggedIn())
+    if (this.storageService.isLoggedIn()) {
+      const urlPath = this.router.url
+      console.log("URLPATH: ",urlPath)
+      if(urlPath.includes("admin")
+        || urlPath.includes("profile")) {
+        this.router.navigate(['home']).finally(
+          () => {
+            this.executeLogin(shouldToast)
+            this.storageService.cleanRefreshToken()
+            this.storageService.cleanAccessToken()
+          })
+        return
+      }
+
+      this.executeLogin(shouldToast);
+
+    }
+
+  }
+
+
+  private executeLogin(shouldToast: boolean) {
+    this.authService.logout().subscribe({
+      next: () => {
+        if (shouldToast) this.toastService.showSuccess("Log out", "You've been logged out.")
+        this.items = []
+        this.getMenubarCategories().then(categories => {
+          let tempItems: MenuItem[];
+          tempItems = [...this.anonymousItems]
+          if (this.storageService.getCart().length == 0) tempItems.filter(value => value.label == "Cart")[0].badge = undefined
+          else tempItems.filter(value => value.label == "Cart")[0].badge = this.storageService.getCart().length.toString()
+          tempItems.splice(1, 0, ...categories)
+          this.items = tempItems
+        }).catch(() => {
+          if (shouldToast) this.toastService.showError("An Error occurred", "Try refreshing to fix it.")
+          this.items = [...this.anonymousItems]
+        })
+        this.authService.logoutInProgress = false
+      },
+      error: err => {
+        this.getMenubarCategories().then(categories => {
+          let tempItems: MenuItem[];
+          tempItems = [...this.anonymousItems]
+          if (this.storageService.getCart().length == 0)
+            tempItems.filter(value => value.label == "Cart")[0].badge = undefined
+          else
+            tempItems.filter(value => value.label == "Cart")[0].badge = this.storageService.getCart()
+              .length.toString()
+          tempItems.splice(1, 0, ...categories)
+          this.items = tempItems
+        }).catch(() => {
+          if (shouldToast) this.toastService.showError("An Error occurred", "Try refreshing to fix it.")
+          this.items = [...this.anonymousItems]
+        })
+        console.log(err);
+        this.authService.logoutInProgress = true
+      }
+    });
+  }
 
   private updateCart() {
     let tempItems:MenuItem[]= [...this.items]

@@ -38,7 +38,7 @@ export class ProductService {
           console.log(`fetched products`)
 
         }),
-        catchError(this.handleError<PageableProducts>('getProducts', { products:[], total_pages:0,
+        catchError(this.handleError<PageableProducts>('getProducts', { products:[],
           total_products:0}))
     ));
   }
@@ -64,7 +64,7 @@ export class ProductService {
           console.log(`fetched products`)
         }),
         catchError(this.handleError<PageableProducts>('getProductsByCategory',
-          { products:[], total_pages:0,
+          { products:[],
           total_products:0}))
       ));
   }
