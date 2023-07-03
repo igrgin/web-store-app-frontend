@@ -55,10 +55,12 @@ export class CartViewComponent implements OnInit{
   removeFromCart(id: string) {
     this.storageService.removeFromCart(id)
     this.cartItems=this.storageService.getCart()
+    this.calculateTotalPrice()
   }
 
   removeAllFromCart() {
     this.storageService.deleteCart()
     this.cartItems=[]
+    this.calculateTotalPrice()
   }
 }

@@ -50,6 +50,11 @@ export class SearchProductsViewComponent implements OnInit {
       this.loading = true
       this.category = params['category']
       this.updateValues();
+      this.selectedSize = 40
+      this.selectedPage = 0
+      this.subcategory = undefined
+      this.selectedPriceRange = [20, 1000]
+      this.name = undefined
       if (this.category)
         this.titleService.setTitle(this.category);
       const initialSearchParams: Search = {
