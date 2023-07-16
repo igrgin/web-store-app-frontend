@@ -1,7 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from "./service/auth/auth.service";
-import {StorageService} from "./service/storage/storage.service";
-import {Observable, switchMap} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -11,7 +8,7 @@ import {Observable, switchMap} from "rxjs";
 export class AppComponent  implements  OnInit{
   title = 'web-store-app-frontend';
 
-  constructor(private authService:AuthService, private storageService:StorageService) {}
+  constructor() {}
 
   ngOnInit(): void {
 
