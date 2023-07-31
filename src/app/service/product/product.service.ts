@@ -17,21 +17,24 @@ export class ProductService {
 
   async searchProducts(searchQuery:Search): Promise<PageableProducts> {
     let queryParams = new HttpParams();
-    if(searchQuery){
-      if(searchQuery.name != null && searchQuery.name.length > 0) queryParams = queryParams.append("name",searchQuery.name)
-      if(searchQuery.category != null && searchQuery.category.length > 0) queryParams = queryParams.append("category",searchQuery.category)
-      if(searchQuery.subcategory != null && searchQuery.subcategory.length > 0) queryParams = queryParams.append("subcategory",searchQuery.subcategory)
-      if(searchQuery.brands != null && searchQuery.brands.length > 0) queryParams = queryParams.append("brands",searchQuery.brands.toString())
-      if(searchQuery.priceRange != null && searchQuery.priceRange.length == 2) {
-        queryParams = queryParams.append("pMin",searchQuery.priceRange[0])
-        queryParams = queryParams.append("pMax",searchQuery.priceRange[1])
-      }
-
-      if(searchQuery.page != null && searchQuery.page >= 0) queryParams = queryParams.append("page",searchQuery.page)
-      if(searchQuery.size != null && searchQuery.size > 0) queryParams = queryParams.append("size",searchQuery.size)
+    if(!searchQuery){
+      return Promise.reject(this.handleError<PageableProducts>('getProducts', { products:[],
+        total_products:0}))
     }
 
-    console.log(queryParams.toString())
+    if(searchQuery.name != null && searchQuery.name.length > 0) queryParams = queryParams.append("name",searchQuery.name)
+    if(searchQuery.subcategory != null && searchQuery.subcategory.length > 0) queryParams = queryParams.append("subcategory",searchQuery.subcategory)
+    if(searchQuery.brands != null && searchQuery.brands.length > 0) queryParams = queryParams.append("brands",searchQuery.brands.toString())
+    if(searchQuery.priceRange != null && searchQuery.priceRange.length == 2) {
+      queryParams = queryParams.append("pMin",searchQuery.priceRange[0])
+      queryParams = queryParams.append("pMax",searchQuery.priceRange[1])
+    }
+
+    queryParams = queryParams.append("category",searchQuery.category)
+    queryParams = queryParams.append("page",searchQuery.page)
+    queryParams = queryParams.append("size",searchQuery.size)
+
+    console.log("search query: ",queryParams.toString())
 
     return  await lastValueFrom(this.http.get<PageableProducts>(`${this.productUrl}/public/search`,{params:queryParams}).pipe(
         tap(_ => {

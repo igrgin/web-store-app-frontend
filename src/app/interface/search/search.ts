@@ -6,6 +6,6 @@ export interface Search
   subcategory?:string,
   brands?:string[],
   priceRange?:number[] | undefined,
-  page?:number,
-  size?:number
+  page:number,
+  size:number
 }
